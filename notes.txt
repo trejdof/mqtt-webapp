@@ -1,0 +1,36 @@
+configurations:
+		
+		time:
+			hours;
+			minutes;
+			
+		interval:
+			start_time:
+			end_ time:
+			OFF_temperature:
+			ON_temperature;
+	
+		configuration:
+			monday:
+				interval[];
+			tuesday:
+				interval[];
+			wednesday:
+				interval[];
+			thursday:
+				interval[];
+			friday:
+				interval[];
+			saturday:
+				interval[];
+			sunday:
+				interval[];
+
+state:
+	selected_configuration: // db
+	active_interval:
+	boiler_state:
+	curr_temperature:
+	curr_temperature_timestamp:
+	prev_temperature:
+	prev_temperature_timestamp:
