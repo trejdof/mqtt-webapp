@@ -1,0 +1,27 @@
+{
+  "default_schedule": {
+    "monday": [
+      { "ON_temperature": 22, "OFF_temperature": 18 },
+      { "ON_temperature": 25, "OFF_temperature": 20 }
+    ],
+    "tuesday": [],
+    "wednesday": [],
+    "thursday": [],
+    "friday": [],
+    "saturday": [],
+    "sunday": []
+  },
+  "weekend_only": {
+    "monday": [],
+    "tuesday": [],
+    "wednesday": [],
+    "thursday": [],
+    "friday": [],
+    "saturday": [
+      { "ON_temperature": 24, "OFF_temperature": 19 }
+    ],
+    "sunday": [
+      { "ON_temperature": 23, "OFF_temperature": 18 }
+    ]
+  }
+}
