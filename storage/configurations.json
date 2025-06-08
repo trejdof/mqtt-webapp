@@ -2,10 +2,26 @@
     "default_schedule": {
         "monday": [
             {
+                "start_time": {
+                    "hour": 8,
+                    "minute": 30
+                },
+                "end_time": {
+                    "hour": 15,
+                    "minute": 30
+                },
                 "ON_temperature": 22,
                 "OFF_temperature": 18
             },
             {
+                "start_time": {
+                    "hour": 8,
+                    "minute": 30
+                },
+                "end_time": {
+                    "hour": 15,
+                    "minute": 30
+                },
                 "ON_temperature": 25,
                 "OFF_temperature": 20
             }
@@ -16,25 +32,6 @@
         "friday": [],
         "saturday": [],
         "sunday": []
-    },
-    "weekend_only": {
-        "monday": [],
-        "tuesday": [],
-        "wednesday": [],
-        "thursday": [],
-        "friday": [],
-        "saturday": [
-            {
-                "ON_temperature": 24,
-                "OFF_temperature": 19
-            }
-        ],
-        "sunday": [
-            {
-                "ON_temperature": 23,
-                "OFF_temperature": 18
-            }
-        ]
     },
     "new_schedule": {
         "monday": [],

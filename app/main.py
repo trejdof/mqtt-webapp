@@ -5,21 +5,12 @@ from app.repositories.config_repo import *
 from app.constants import DAYS_OF_WEEK
 
 def main():
-    # config = load_config("default_schedule")
 
-    # print(f"Loaded config: {config.name}")
+    delete_config("test1")
+    delete_config("test2")
+    delete_config("test4")
+    print(json.dumps(load_all_configs(), indent=4))
 
-    # for day_name in DAYS_OF_WEEK:
-    #     intervals = getattr(config, day_name)
-    #     print(f"{day_name.capitalize()}:")
-    #     for interval in intervals:
-    #         print(f"  ON: {interval.ON_temperature}, OFF: {interval.OFF_temperature}")
-    # create_config("new_schedule")
-
-    t = Time(8, 30)
-    print(repr(t))
-
-    t1 = Time(25, 61)
 
 
 if __name__ == "__main__":

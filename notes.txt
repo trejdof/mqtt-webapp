@@ -6,7 +6,7 @@ configurations:
 			
 		interval:
 			start_time:
-			end_ time:
+			end_time:
 			OFF_temperature:
 			ON_temperature;
 	

@@ -27,18 +27,40 @@ def load_config(name: str) -> Configuration:
 def parse_intervals(raw_list: List[Dict]) -> List[Interval]:
     return [Interval(**item) for item in raw_list]
 
-def create_config(name: str):
-    with open(CONFIG_FILE, 'r') as f:
-        all_configs = json.load(f)
 
+def create_config(name: str):
+    all_configs = load_all_configs()
+    
     if name in all_configs:
         raise ValueError(f"Configuration '{name}' already exists.")
 
-    empty_schedule = {day: [] for day in DAYS_OF_WEEK}
+    new_config = {day: [] for day in DAYS_OF_WEEK}
 
-    all_configs[name] = empty_schedule
+    all_configs[name] = new_config
 
-    with open(CONFIG_FILE, 'w') as f:
-        json.dump(all_configs, f, indent=4)
+    save_all_configs(all_configs)
 
     print(f"Configuration '{name}' created with empty schedule")
+
+
+def delete_config(name: str):
+    all_configs = load_all_configs()
+
+    if name not in all_configs:
+        raise ValueError(f"Configuration '{name}' does not exist.")
+    
+    del all_configs[name]
+
+    save_all_configs(all_configs)
+    
+    print(f"Configuration '{name}' has been deleted.")
+
+
+def load_all_configs() -> Dict:
+    with open(CONFIG_FILE, 'r') as f:
+        return json.load(f)
+
+
+def save_all_configs(configs: Dict):
+    with open(CONFIG_FILE, 'w') as f:
+        json.dump(configs, f, indent=4)
