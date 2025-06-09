@@ -3,4 +3,4 @@ from app.api import config_routes
 
 app = FastAPI()
 
-#app.include_router(config_routes.router)
+app.include_router(config_routes.router)
