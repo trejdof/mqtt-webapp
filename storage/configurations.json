@@ -4,11 +4,13 @@
             {
                 "start_time": {
                     "hour": 8,
-                    "minute": 30
+                    "minute": 30,
+                    "timestamp": 510
                 },
                 "end_time": {
                     "hour": 15,
-                    "minute": 30
+                    "minute": 30,
+                    "timestamp": 930
                 },
                 "ON_temperature": 22,
                 "OFF_temperature": 18
@@ -16,11 +18,13 @@
             {
                 "start_time": {
                     "hour": 8,
-                    "minute": 30
+                    "minute": 30,
+                    "timestamp": 510
                 },
                 "end_time": {
                     "hour": 15,
-                    "minute": 30
+                    "minute": 30,
+                    "timestamp": 930
                 },
                 "ON_temperature": 25,
                 "OFF_temperature": 20
@@ -33,7 +37,7 @@
         "saturday": [],
         "sunday": []
     },
-    "new_schedule": {
+    "testni": {
         "monday": [],
         "tuesday": [],
         "wednesday": [],
