@@ -75,3 +75,38 @@ def load_all_configs() -> Dict:
 def save_all_configs(configs: Dict):
     with open(CONFIG_FILE, 'w') as f:
         json.dump(configs, f, indent=4)
+
+
+def check_interval_list(intervals: List[Interval]) -> bool:
+    if not intervals:
+        raise ValueError("Interval list is empty")
+
+    # Check 1st requirement: first start_time should be last end_time + 1
+    first_start = intervals[0].start_time.timestamp
+    last_end = intervals[-1].end_time.timestamp
+    expected_first_start = (last_end + 1) % (24 * 60) # Edge case when 23:59 is last end
+
+    if first_start != expected_first_start:
+        raise ValueError(f"First and Last timestamp in whole list are not continuous")
+
+    wrap_count = 0
+    n = len(intervals)
+
+    for i in range(n):
+        current = intervals[i]
+        start = current.start_time.timestamp
+        end = current.end_time.timestamp
+
+        if start > end: # means this Interval passes midnight
+            wrap_count += 1
+
+            if wrap_count > 1:
+                raise ValueError("More than one midnight pass")
+
+        if i > 0:
+            prev_end = intervals[i - 1].end_time.timestamp
+            expected_start = (prev_end + 1) % (24 * 60) # Has to do % in case 23:59 was prev_end
+            if start != expected_start:
+                raise ValueError(f"Intervals {i} and {i + 1} are not continuous: ")
+
+    return True
