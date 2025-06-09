@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from app.models.configuration import Configuration
 from app.models.interval import Interval
+from app.models.time import Time
 from typing import List, Dict
 from app.constants import DAYS_OF_WEEK
 
@@ -25,7 +26,17 @@ def load_config(name: str) -> Configuration:
     )
 
 def parse_intervals(raw_list: List[Dict]) -> List[Interval]:
-    return [Interval(**item) for item in raw_list]
+    return [
+        Interval(
+            ON_temperature=item["ON_temperature"],
+            OFF_temperature=item["OFF_temperature"],
+            # Time class's constructor computes timestamp here
+            # No need to parse it as well. 
+            start_time=Time(item["start_time"]["hour"], item["start_time"]["minute"]),
+            end_time=Time(item["end_time"]["hour"], item["end_time"]["minute"]),
+        )
+        for item in raw_list
+    ]
 
 
 def create_config(name: str):
