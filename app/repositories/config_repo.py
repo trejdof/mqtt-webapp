@@ -5,8 +5,10 @@ from app.models.interval import Interval
 from app.models.time import Time
 from typing import List, Dict
 from app.constants import DAYS_OF_WEEK
+from datetime import datetime
 
 CONFIG_FILE = Path("storage/configurations.json")
+
 
 def load_config(name: str) -> Configuration:
     with open(CONFIG_FILE, 'r') as f:
@@ -110,3 +112,18 @@ def check_interval_list(intervals: List[Interval]) -> bool:
                 raise ValueError(f"Intervals {i} and {i + 1} are not continuous: ")
 
     return True
+
+def find_active_interval(config: Configuration, time: Time) -> str:
+    day = datetime.today().strftime("%A").lower()
+    intervals = getattr(config, day)
+
+    for i, interval in enumerate(intervals):
+        start = interval.start_time.timestamp
+        end = interval.end_time.timestamp
+
+        if start < end:
+            if start <= time.timestamp <= end:
+                return f"{day}:{i}"
+        else: # interval wraps past midnight
+            if time.timestamp >= start or time.timestamp <= end:
+                return f"{day}:{i}"
