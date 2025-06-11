@@ -1,0 +1,9 @@
+{
+    "selected_configuration": "first",
+    "active_interval": "wednesday:1",
+    "boiler_state": true,
+    "current_temp": 21.7,
+    "current_timestamp": "09:15:30",
+    "prev_temp": 20.5,
+    "prev_timestamp": "08:45:00"
+}
