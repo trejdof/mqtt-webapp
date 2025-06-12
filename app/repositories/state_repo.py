@@ -55,9 +55,23 @@ def temp_heartbeat(temp: float):
     now = datetime.now()
     record_temperature_reading(temp, now)
 
-    # TODO Update active_interval
+    state = load_state_threadsafe()
+    config = load_config(state.selected_config)
+    time_obj = Time(now.hour, now.minute)
+
+    active_interval = find_active_interval(config, time_obj)
+
+    if active_interval != state.active_interval:
+        update_active_interval(active_interval)
+
     # TODO Checkk if boiler_state needs to be changed and singalized
 
+def update_active_interval(interval: str):
+    state = load_state_threadsafe()
+
+    state.active_interval = interval
+
+    save_state_threadsafe(state)
 
 def record_temperature_reading(temp: float, timestamp: time):
     state = load_state_threadsafe()
@@ -69,7 +83,6 @@ def record_temperature_reading(temp: float, timestamp: time):
     state.current_timestamp = timestamp
 
     save_state_threadsafe(state)
-
 
 
 def parse_time(t: str) -> datetime:
