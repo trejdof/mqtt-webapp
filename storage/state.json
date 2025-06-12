@@ -2,8 +2,8 @@
     "selected_configuration": "first",
     "active_interval": "wednesday:1",
     "boiler_state": true,
-    "current_temp": 21.7,
-    "current_timestamp": "09:15:30",
-    "prev_temp": 20.5,
-    "prev_timestamp": "08:45:00"
+    "current_temp": 26.5,
+    "current_timestamp": "2025-06-12T21:44:38",
+    "prev_temp": 16.5,
+    "prev_timestamp": "2025-06-12T21:44:23"
 }

@@ -32,7 +32,7 @@ def parse_intervals(raw_list: List[Dict]) -> List[Interval]:
         Interval(
             ON_temperature=item["ON_temperature"],
             OFF_temperature=item["OFF_temperature"],
-            # Time class's constructor computes timestamp here
+            # Time class constructor computes timestamp here
             # No need to parse it as well. 
             start_time=Time(item["start_time"]["hour"], item["start_time"]["minute"]),
             end_time=Time(item["end_time"]["hour"], item["end_time"]["minute"]),
