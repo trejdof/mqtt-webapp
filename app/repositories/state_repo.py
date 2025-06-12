@@ -3,7 +3,7 @@ from pathlib import Path
 from app.models.state import State
 from app.models.time import Time
 from app.repositories.config_repo import load_config, find_active_interval
-from datetime import time
+from datetime import time, datetime
 import threading
 
 _state_lock = threading.Lock()
@@ -35,9 +35,9 @@ def save_state_threadsafe(state: State):
                 "active_interval": state.active_interval,
                 "boiler_state": state.boiler_state,
                 "current_temp": state.current_temp,
-                "current_timestamp": state.current_timestamp.isoformat(),
+                "current_timestamp": state.current_timestamp.replace(microsecond=0).isoformat(),
                 "prev_temp": state.prev_temp,
-                "prev_timestamp": state.prev_timestamp.isoformat()
+                "prev_timestamp": state.prev_timestamp.replace(microsecond=0).isoformat()
             }, f, indent=4)
 
 
@@ -51,8 +51,8 @@ def change_selected_configuration(name: str, current_time: Time):
     save_state_threadsafe(state)
 
 
-def parse_time(t: str) -> time:
-    return time.fromisoformat(t)
+def parse_time(t: str) -> datetime:
+    return datetime.fromisoformat(t)
 
 
 def print_state(state: State):
