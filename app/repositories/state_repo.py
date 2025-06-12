@@ -51,6 +51,27 @@ def change_selected_configuration(name: str, current_time: Time):
     save_state_threadsafe(state)
 
 
+def temp_heartbeat(temp: float):
+    now = datetime.now()
+    record_temperature_reading(temp, now)
+
+    # TODO Update active_interval
+    # TODO Checkk if boiler_state needs to be changed and singalized
+
+
+def record_temperature_reading(temp: float, timestamp: time):
+    state = load_state_threadsafe()
+
+    state.prev_temp = state.current_temp
+    state.prev_timestamp = state.current_timestamp
+
+    state.current_temp = temp
+    state.current_timestamp = timestamp
+
+    save_state_threadsafe(state)
+
+
+
 def parse_time(t: str) -> datetime:
     return datetime.fromisoformat(t)
 
