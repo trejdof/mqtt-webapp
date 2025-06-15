@@ -7,3 +7,8 @@ class Interval:
     OFF_temperature: float
     start_time: Time
     end_time: Time
+
+    def __str__(self):
+        return (
+            f"{self.start_time} → {self.end_time} "
+        )

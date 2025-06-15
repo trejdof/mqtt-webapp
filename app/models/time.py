@@ -14,5 +14,10 @@ class Time:
         self.minutes = minutes
         self.timestamp = hours * 60 + minutes
 
+
     def __repr__(self):
         return f"Time({self.hours:02d}:{self.minutes:02d}, timestamp:{self.timestamp})"
+
+
+    def __str__(self):
+        return f"{self.hours:02d}:{self.minutes:02d}"
