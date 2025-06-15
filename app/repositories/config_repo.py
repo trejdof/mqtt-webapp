@@ -127,3 +127,10 @@ def find_active_interval(config: Configuration, time: Time) -> str:
         else: # interval wraps past midnight
             if time.timestamp >= start or time.timestamp <= end:
                 return f"{day}:{i}"
+
+
+def get_interval_obj(config: Configuration, target_interval: str) -> Interval:
+    day, index_str = target_interval.split(":")
+    index = int(index_str)
+
+    return getattr(config, day)[index]
