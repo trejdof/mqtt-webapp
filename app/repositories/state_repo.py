@@ -53,6 +53,8 @@ def change_selected_configuration(name: str, current_time: Time):
 
 def temp_heartbeat(temp: float):
     now = datetime.now()
+    timestamp = now.strftime("%d.%m.%Y %H:%M:%S")
+    print(f"Received temperature: {temp} at {timestamp}")
     record_temperature_reading(temp, now)
 
     state = load_state_threadsafe()
@@ -64,14 +66,19 @@ def temp_heartbeat(temp: float):
     if active_interval != state.active_interval:
         update_active_interval(active_interval)
 
-    # TODO Checkk if boiler_state needs to be changed and singalized
+    # TODO Check if boiler_state needs to be changed and singalized
+    # TODO Maybe this function should return true/false that signals
+    #      whehter boiler should be turned on
 
+
+# TODO This function should log it so maybe it should recieve old one as parameter
 def update_active_interval(interval: str):
     state = load_state_threadsafe()
 
     state.active_interval = interval
 
     save_state_threadsafe(state)
+
 
 def record_temperature_reading(temp: float, timestamp: time):
     state = load_state_threadsafe()
