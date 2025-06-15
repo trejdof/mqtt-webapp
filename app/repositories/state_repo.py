@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from app.models.state import State
 from app.models.time import Time
-from app.repositories.config_repo import load_config, find_active_interval
+from app.repositories.config_repo import load_config, find_active_interval, get_interval_obj
 from datetime import time, datetime
 import threading
 
@@ -74,10 +74,17 @@ def temp_heartbeat(temp: float):
 # TODO This function should log it so maybe it should recieve old one as parameter
 def update_active_interval(interval: str):
     state = load_state_threadsafe()
+    config = load_config(state.selected_config)
+
+    old_interval_string = state.active_interval
+    old_interval_obj = get_interval_obj(config, old_interval_string)
+    new_interval_obj = get_interval_obj(config, interval)
 
     state.active_interval = interval
-
     save_state_threadsafe(state)
+
+    print(f"[NOTIFY] Interval changed: {old_interval_obj} => {new_interval_obj}")
+
 
 
 def record_temperature_reading(temp: float, timestamp: time):
