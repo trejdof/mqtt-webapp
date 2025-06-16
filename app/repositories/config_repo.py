@@ -30,8 +30,8 @@ def load_config(name: str) -> Configuration:
 def parse_intervals(raw_list: List[Dict]) -> List[Interval]:
     return [
         Interval(
-            ON_temperature=item["ON_temperature"],
-            OFF_temperature=item["OFF_temperature"],
+            ON_temperature=float(item["ON_temperature"]),
+            OFF_temperature=float(item["OFF_temperature"]),
             # Time class constructor computes timestamp here
             # No need to parse it as well. 
             start_time=Time(item["start_time"]["hour"], item["start_time"]["minute"]),
@@ -112,6 +112,7 @@ def check_interval_list(intervals: List[Interval]) -> bool:
                 raise ValueError(f"Intervals {i} and {i + 1} are not continuous: ")
 
     return True
+
 
 def find_active_interval(config: Configuration, time: Time) -> str:
     day = datetime.today().strftime("%A").lower()

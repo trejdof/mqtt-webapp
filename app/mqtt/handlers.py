@@ -1,10 +1,12 @@
-from app.repositories.state_repo import temp_heartbeat
+from app.repositories.state_repo import temp_heartbeat, toggle_boiler
 
-def handle_temperature_ping(temp):
-    toggle_boiler = temp_heartbeat(temp)
+def handle_temperature_ping(temp: float):
+    should_toggle = temp_heartbeat(temp)
 
-    if toggle_boiler:
+    if should_toggle:
         toggle_boiler()
+
+    print("__________________________________________________________________________")
 
 
 def handle_boiler_ack(payload):
@@ -14,5 +16,5 @@ def handle_boiler_ack(payload):
 # TODO  Publish MQTT message to the boiler TOPIC
 #       Wait for ACK by the MCU on MQTT
 #       Change boiler state in STATE
-def toggle_boiler():
+def handle_toggle_boiler():
     return 0

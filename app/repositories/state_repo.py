@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from app.models.state import State
 from app.models.time import Time
+from app.models.configuration import Configuration
 from app.repositories.config_repo import load_config, find_active_interval, get_interval_obj
 from datetime import time, datetime
 import threading
@@ -52,10 +53,8 @@ def change_selected_configuration(name: str, current_time: Time):
 
 
 def temp_heartbeat(temp: float) -> bool:
-    boiler_toggle = False
     now = datetime.now()
     timestamp = now.strftime("%d.%m.%Y %H:%M:%S")
-    print(f"Received temperature: {temp} at {timestamp}")
     record_temperature_reading(temp, now)
 
     state = load_state_threadsafe()
@@ -67,9 +66,38 @@ def temp_heartbeat(temp: float) -> bool:
     if active_interval != state.active_interval:
         update_active_interval(active_interval)
 
-    # TODO Write function that checks whether  boiler should be toggled ON/OFF
+    boiler_toggle = should_toggle_boiler(temp, state.boiler_state, active_interval, config)
 
     return boiler_toggle
+
+
+def should_toggle_boiler(temp: float, boiler_state: bool, active_interval: str, config: Configuration) -> bool:
+
+    active_interval_obj = get_interval_obj(config, active_interval)
+
+    if boiler_state:
+        # boiler is ON
+        if temp > active_interval_obj.OFF_temperature: # Should turn OFF
+            return True
+    else:
+        if temp < active_interval_obj.ON_temperature: # Should turn ON
+            return True 
+
+    return False
+
+
+def toggle_boiler():
+    state = load_state_threadsafe()
+
+    old_boiler_state = state.boiler_state
+    state.boiler_state = not state.boiler_state
+
+    save_state_threadsafe(state)
+
+    print(f"[NOTIFY] Boiler state changed from {boiler_state_str(old_boiler_state)} to {boiler_state_str(state.boiler_state)}")
+
+
+
 
 
 
@@ -98,6 +126,8 @@ def record_temperature_reading(temp: float, timestamp: time):
     state.current_timestamp = timestamp
 
     save_state_threadsafe(state)
+    if state.prev_temp != state.current_temp:
+        print(f"[NOTIFY] Temperature changed from {state.prev_temp} to {state.current_temp}")
 
 
 def parse_time(t: str) -> datetime:
@@ -111,3 +141,7 @@ def print_state(state: State):
     print(f"  Boiler state:           {state.boiler_state}")
     print(f"  Current temp:           {state.current_temp}°C at {state.current_timestamp}")
     print(f"  Previous temp:          {state.prev_temp}°C at {state.prev_timestamp}")
+
+
+def boiler_state_str(state: bool) -> str:
+    return "ON" if state else "OFF"
