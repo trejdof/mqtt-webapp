@@ -1,10 +1,10 @@
-from app.repositories.state_repo import temp_heartbeat, toggle_boiler
+import app.repositories.state_repo as sr
 
 def handle_temperature_ping(temp: float):
-    should_toggle = temp_heartbeat(temp)
+    should_toggle = sr.temp_heartbeat(temp)
 
     if should_toggle:
-        toggle_boiler()
+        sr.toggle_boiler()
 
     print("__________________________________________________________________________")
 

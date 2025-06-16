@@ -3,7 +3,7 @@ from pathlib import Path
 from app.models.state import State
 from app.models.time import Time
 from app.models.configuration import Configuration
-from app.repositories.config_repo import load_config, find_active_interval, get_interval_obj
+import app.repositories.config_repo as cfg
 from datetime import time, datetime
 import threading
 
@@ -43,8 +43,8 @@ def save_state_threadsafe(state: State):
 
 
 def change_selected_configuration(name: str, current_time: Time):
-    new_config = load_config(name)
-    new_active_interval =  find_active_interval(new_config, current_time)
+    new_config = cfg.load_config(name)
+    new_active_interval =  cfg.find_active_interval(new_config, current_time)
 
     state = load_state_threadsafe()
     state.selected_config = new_config.name
@@ -54,14 +54,15 @@ def change_selected_configuration(name: str, current_time: Time):
 
 def temp_heartbeat(temp: float) -> bool:
     now = datetime.now()
-    timestamp = now.strftime("%d.%m.%Y %H:%M:%S")
+    time_obj = Time(now.hour, now.minute)
+
     record_temperature_reading(temp, now)
 
     state = load_state_threadsafe()
-    config = load_config(state.selected_config)
-    time_obj = Time(now.hour, now.minute)
+    config = cfg.load_config(state.selected_config)
+    
 
-    active_interval = find_active_interval(config, time_obj)
+    active_interval = cfg.find_active_interval(config, time_obj)
 
     if active_interval != state.active_interval:
         update_active_interval(active_interval)
@@ -73,14 +74,15 @@ def temp_heartbeat(temp: float) -> bool:
 
 def should_toggle_boiler(temp: float, boiler_state: bool, active_interval: str, config: Configuration) -> bool:
 
-    active_interval_obj = get_interval_obj(config, active_interval)
+    active_interval_obj = cfg.get_interval_obj(config, active_interval)
 
     if boiler_state:
         # boiler is ON
-        if temp > active_interval_obj.OFF_temperature: # Should turn OFF
+        if temp > active_interval_obj.OFF_temperature: # should turn OFF
             return True
     else:
-        if temp < active_interval_obj.ON_temperature: # Should turn ON
+        # boilder is OFF
+        if temp < active_interval_obj.ON_temperature: # should turn ON
             return True 
 
     return False
@@ -97,23 +99,18 @@ def toggle_boiler():
     print(f"[NOTIFY] Boiler state changed from {boiler_state_str(old_boiler_state)} to {boiler_state_str(state.boiler_state)}")
 
 
-
-
-
-
 def update_active_interval(interval: str):
     state = load_state_threadsafe()
-    config = load_config(state.selected_config)
+    config = cfg.load_config(state.selected_config)
 
     old_interval_string = state.active_interval
-    old_interval_obj = get_interval_obj(config, old_interval_string)
-    new_interval_obj = get_interval_obj(config, interval)
+    old_interval_obj = cfg.get_interval_obj(config, old_interval_string)
+    new_interval_obj = cfg.get_interval_obj(config, interval)
 
     state.active_interval = interval
     save_state_threadsafe(state)
 
     print(f"[NOTIFY] Interval changed: {old_interval_obj} => {new_interval_obj}")
-
 
 
 def record_temperature_reading(temp: float, timestamp: time):

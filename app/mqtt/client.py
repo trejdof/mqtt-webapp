@@ -30,11 +30,11 @@ def on_message(client, userdata, msg):
     global last_temp_time
     topic = msg.topic
     payload = msg.payload
+    last_temp_time = datetime.now()
 
     if topic == topics.SENSOR_TOPIC:
         temp = float(payload.decode())
         handlers.handle_temperature_ping(temp)
-        last_temp_time = datetime.now()
     elif topic == topics.BOILER_TOPIC:
         handlers.handle_boiler_ack(payload)
     else:

@@ -101,7 +101,6 @@ def check_interval_list(intervals: List[Interval]) -> bool:
 
         if start > end: # means this Interval passes midnight
             wrap_count += 1
-
             if wrap_count > 1:
                 raise ValueError("More than one midnight pass")
 
@@ -134,4 +133,5 @@ def get_interval_obj(config: Configuration, target_interval: str) -> Interval:
     day, index_str = target_interval.split(":")
     index = int(index_str)
 
+    # config.day[index]
     return getattr(config, day)[index]
