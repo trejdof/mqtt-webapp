@@ -1,13 +1,8 @@
 import paho.mqtt.client as mqtt
 from app.mqtt import topics, handlers
 from datetime import datetime, timedelta
-from time import sleep
 from threading import Thread, Event
-
-
-MQTT_BROKER = "localhost"
-MQTT_PORT = 1883
-KEEPALIVE = 60
+import time
 
 client = mqtt.Client()
 last_temp_time = datetime.now()
@@ -16,38 +11,31 @@ watchdog_stop_event = Event()
 def start_mqtt():
     client.on_connect = on_connect
     client.on_message = on_message
-    client.connect(MQTT_BROKER, MQTT_PORT, KEEPALIVE)
+    client.connect("localhost", 1883, 60)
     client.loop_start()
 
-
 def on_connect(client, userdata, flags, rc):
-    print("[MQTT] Connected with result code", rc)
+    print(f"[MQTT] Connected with result code {rc}")
     client.subscribe(topics.SENSOR_TOPIC)
-    client.subscribe(topics.BOILER_TOPIC)
-
+    client.subscribe(topics.ACK_TOPIC)
 
 def on_message(client, userdata, msg):
     global last_temp_time
     topic = msg.topic
-    payload = msg.payload
+    payload = msg.payload.decode().strip()
     last_temp_time = datetime.now()
 
     if topic == topics.SENSOR_TOPIC:
-        temp = float(payload.decode())
+        temp = float(payload)
         handlers.handle_temperature_ping(temp)
-    elif topic == topics.BOILER_TOPIC:
+    elif topic == topics.ACK_TOPIC:
         handlers.handle_boiler_ack(payload)
-    else:
-        print(f"[MQTT] Unhandled topic: {topic}")
-
 
 def start_temperature_watchdog():
-    print("[TEMPERATURE] Watchdog started")
+    print("[WATCHDOG] Starting temperature watchdog...")
     def watchdog():
         while not watchdog_stop_event.is_set():
-            now = datetime.now()
-            if now - last_temp_time > timedelta(minutes = 1):
-                print("[WARNING] No temperature received in the last minute!")
-            watchdog_stop_event.wait(30)  # 30s
-    t = Thread(target=watchdog, daemon=True)
-    t.start()
+            if datetime.now() - last_temp_time > timedelta(minutes=1):
+                print("[WATCHDOG] No temperature received in the last minute!")
+            watchdog_stop_event.wait(30)
+    Thread(target=watchdog, daemon=True).start()

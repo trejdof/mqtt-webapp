@@ -124,7 +124,7 @@ def record_temperature_reading(temp: float, timestamp: time):
 
     save_state_threadsafe(state)
     if state.prev_temp != state.current_temp:
-        print(f"[NOTIFY] Temperature changed from {state.prev_temp} to {state.current_temp}")
+        print(f"[STATE] Temperature changed from {state.prev_temp} to {state.current_temp}")
 
 
 def parse_time(t: str) -> datetime:

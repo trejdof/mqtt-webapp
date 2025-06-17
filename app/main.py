@@ -4,11 +4,15 @@ from app.models.time import Time
 from app.repositories.config_repo import *
 from app.repositories.state_repo import *
 from app.constants import DAYS_OF_WEEK
-from app.mqtt import client
+from app.mqtt import client, mqtt_service
 from time import sleep
 
 
 def main():
+
+    # Inject the MQTT client into the service
+    mqtt_service.init(client.client)
+
     client.start_mqtt()
     client.start_temperature_watchdog()
 

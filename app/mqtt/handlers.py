@@ -1,20 +1,36 @@
+import time
+from threading import Event
 import app.repositories.state_repo as sr
+from app.mqtt import mqtt_service
+import threading
+
+ACK_TIMEOUT = 5
+ack_event = Event()
 
 def handle_temperature_ping(temp: float):
+    print(f"[MQTT] Temperature ping: {temp}")
     should_toggle = sr.temp_heartbeat(temp)
-
     if should_toggle:
-        sr.toggle_boiler()
-
+        threading.Thread(target=toggle_with_ack, daemon=True).start()
     print("__________________________________________________________________________")
 
+def handle_boiler_ack(payload: str):
+    if payload.strip() == "ACK":
+        print(f"[HANDLER] Received ACK")
+        ack_event.set()
 
-def handle_boiler_ack(payload):
-    return 0
 
+def wait_for_ack_and_toggle():
+    ack_event.clear()
+    start = time.time()
+    print(f"[HANDLER] Waiting for ACK")
 
-# TODO  Publish MQTT message to the boiler TOPIC
-#       Wait for ACK by the MCU on MQTT
-#       Change boiler state in STATE
-def handle_toggle_boiler():
-    return 0
+    if ack_event.wait(timeout=5):
+        print(f"[HANDLER] ACK received")
+        sr.toggle_boiler()
+    else:
+        print(f"[HANDLER] No ACK received")
+
+def toggle_with_ack():
+    mqtt_service.publish_toggle_command()
+    wait_for_ack_and_toggle()
