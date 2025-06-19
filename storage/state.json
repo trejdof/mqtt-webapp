@@ -1,9 +1,11 @@
 {
     "selected_configuration": "first",
-    "active_interval": "monday:1",
+    "active_interval": "tuesday:1",
     "boiler_state": false,
-    "current_temp": 20.38,
-    "current_timestamp": "2025-06-16T21:00:49",
-    "prev_temp": 20.06,
-    "prev_timestamp": "2025-06-16T21:00:39"
+    "current_temp": 19.7,
+    "current_timestamp": "2025-06-17T23:58:22",
+    "prev_temp": 19.34,
+    "prev_timestamp": "2025-06-17T23:58:12",
+    "temp_measure_period": 15,
+    "consecutive_measures": 10
 }

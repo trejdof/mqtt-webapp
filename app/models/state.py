@@ -12,3 +12,5 @@ class State:
     current_timestamp: datetime
     prev_temp: float
     prev_timestamp: datetime
+    temp_measure_period: int
+    consecutive_measures: int

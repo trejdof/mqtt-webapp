@@ -24,7 +24,9 @@ def load_state_threadsafe() -> State:
             current_temp=state["current_temp"],
             current_timestamp=parse_time(state["current_timestamp"]),
             prev_temp=state["prev_temp"],
-            prev_timestamp=parse_time(state["prev_timestamp"])
+            prev_timestamp=parse_time(state["prev_timestamp"]),
+            temp_measure_period=state["temp_measure_period"],
+            consecutive_measures=state["consecutive_measures"]
         )
 
 
@@ -38,7 +40,9 @@ def save_state_threadsafe(state: State):
                 "current_temp": state.current_temp,
                 "current_timestamp": state.current_timestamp.replace(microsecond=0).isoformat(),
                 "prev_temp": state.prev_temp,
-                "prev_timestamp": state.prev_timestamp.replace(microsecond=0).isoformat()
+                "prev_timestamp": state.prev_timestamp.replace(microsecond=0).isoformat(),
+                "temp_measure_eriod": state.temp_measure_period,
+                "consecutive_measures": state.consecutive_measures
             }, f, indent=4)
 
 
@@ -132,12 +136,15 @@ def parse_time(t: str) -> datetime:
 
 
 def print_state(state: State):
-    print("State:")
-    print(f"  Selected configuration: {state.selected_config}")
-    print(f"  Active interval:        {state.active_interval}")
-    print(f"  Boiler state:           {state.boiler_state}")
-    print(f"  Current temp:           {state.current_temp}°C at {state.current_timestamp}")
-    print(f"  Previous temp:          {state.prev_temp}°C at {state.prev_timestamp}")
+    print("===================================================================================")
+    print(f"  Selected configuration:               {state.selected_config}")
+    print(f"  Active interval:                      {state.active_interval}")
+    print(f"  Boiler state:                         {state.boiler_state}")
+    print(f"  Current temp:                         {state.current_temp}°C at {state.current_timestamp}")
+    print(f"  Previous temp:                        {state.prev_temp}°C at {state.prev_timestamp}")
+    print(f"  Temperature measure period:           {state.temp_measure_period}")
+    print(f"  Consecutive temperature measures:     {state.consecutive_measures}")
+    print("===================================================================================")
 
 
 def boiler_state_str(state: bool) -> str:
