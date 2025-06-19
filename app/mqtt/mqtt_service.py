@@ -11,3 +11,10 @@ def publish_toggle_command():
         raise RuntimeError("MQTT client not initialized in mqtt_service.")
     _mqtt_client.publish(topics.BOILER_TOPIC, payload="TOGGLE")
     print("[MQTT SERVICE] Published TOGGLE to BOILER_TOPIC")
+
+
+def publish_message(topic: str, payload: str):
+    if not _mqtt_client:
+        raise RuntimeError("MQTT client not initialized in mqtt_service.")
+    _mqtt_client.publish(topic, payload)
+    print(f"[MQTT SERVICE] Published {payload} to {topic} topic") 
