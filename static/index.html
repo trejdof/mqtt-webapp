@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boiler Control System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Boiler Control System</h1>
+        </div>
+
+        <!-- Messages -->
+        <div id="messages"></div>
+
+        <!-- Cards Grid -->
+        <div class="cards-grid">
+            <!-- System Status Card -->
+            <div class="card">
+                <h2 class="card-title" id="status-title">System Status</h2>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-label">Boiler</div>
+                        <div class="status-value" id="boiler-status">Loading...</div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-label">Active Config</div>
+                        <div class="status-value" id="active-config">Loading...</div>
+                    </div>
+                </div>
+                <div class="status-item-full">
+                    <div class="status-label">Active Interval</div>
+                    <div class="status-value" id="active-interval">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Temperature Card -->
+            <div class="card">
+                <h2 class="card-title">Temperature</h2>
+                <div class="temp-display">
+                    <div class="current-temp" id="current-temp">--°C</div>
+                    <div id="temp-info">No data</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

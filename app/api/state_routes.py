@@ -1,0 +1,73 @@
+from fastapi import APIRouter, HTTPException
+from app.repositories import state_repo, config_repo
+from app.models.time import Time
+from datetime import datetime
+
+router = APIRouter()
+
+@router.get("/state")
+def get_state():
+    """Get current system state"""
+    try:
+        state = state_repo.load_state_threadsafe()
+        return {
+            "selected_config": state.selected_config,
+            "active_interval": state.active_interval,
+            "boiler_state": state.boiler_state,
+            "current_temp": state.current_temp,
+            "current_timestamp": state.current_timestamp.isoformat(),
+            "prev_temp": state.prev_temp,
+            "prev_timestamp": state.prev_timestamp.isoformat(),
+            "temp_measure_period": state.temp_measure_period,
+            "consecutive_measures": state.consecutive_measures
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error loading state: {str(e)}")
+
+
+@router.post("/state/select-config")
+def select_config(config_data: dict):
+    """Change the selected configuration"""
+    try:
+        config_name = config_data.get("config_name")
+        if not config_name:
+            raise HTTPException(status_code=400, detail="config_name is required")
+        
+        # Check if config exists
+        config_repo.load_config(config_name)
+        
+        # Get current time for finding active interval
+        now = datetime.now()
+        current_time = Time(now.hour, now.minute)
+        
+        # Change the selected configuration
+        state_repo.change_selected_configuration(config_name, current_time)
+        
+        return {"status": "success", "selected_config": config_name}
+        
+    except KeyError:
+        raise HTTPException(status_code=404, detail=f"Configuration '{config_name}' not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error changing configuration: {str(e)}")
+
+
+@router.get("/state/active-interval-details")
+def get_active_interval_details():
+    """Get detailed information about the currently active interval"""
+    try:
+        state = state_repo.load_state_threadsafe()
+        config = config_repo.load_config(state.selected_config)
+        
+        if state.active_interval:
+            interval_obj = config_repo.get_interval_obj(config, state.active_interval)
+            return {
+                "active_interval": state.active_interval,
+                "start_time": str(interval_obj.start_time),
+                "end_time": str(interval_obj.end_time),
+                "ON_temperature": interval_obj.ON_temperature,
+                "OFF_temperature": interval_obj.OFF_temperature
+            }
+        else:
+            return {"active_interval": None}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting interval details: {str(e)}")

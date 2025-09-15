@@ -32,3 +32,29 @@ def delete_config(name: str):
         return {"status": "deleted", "name": name}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.put("/configs/{name}")
+def update_config(name: str, config_data: dict):
+    try:
+        all_configs = config_repo.load_all_configs()
+        
+        # Check if config exists
+        if name not in all_configs:
+            raise HTTPException(status_code=404, detail=f"Configuration '{name}' not found")
+        
+        # Validate each day's intervals
+        for day in ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]:
+            if day in config_data and config_data[day]:  # Only validate if day has intervals
+                intervals = config_repo.parse_intervals(config_data[day])
+                config_repo.check_interval_list(intervals)
+        
+        # Update and save if validation passes
+        all_configs[name] = config_data
+        config_repo.save_all_configs(all_configs)
+        
+        return {"status": "updated", "name": name}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=f"Configuration '{name}' not found")

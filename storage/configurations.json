@@ -18,14 +18,14 @@
       {
         "start_time": { "hour": 8, "minute": 0, "timestamp": 480 },
         "end_time": { "hour": 19, "minute": 30, "timestamp": 1170 },
-        "ON_temperature": 22,
-        "OFF_temperature": 18
+        "ON_temperature": 19,
+        "OFF_temperature": 21
       },
       {
         "start_time": { "hour": 19, "minute": 31, "timestamp": 1171 },
         "end_time": { "hour": 7, "minute": 59, "timestamp": 479 },
-        "ON_temperature": 22,
-        "OFF_temperature": 18
+        "ON_temperature": 19,
+        "OFF_temperature": 20
       }
     ],
     "wednesday": [

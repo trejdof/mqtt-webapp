@@ -41,7 +41,7 @@ def save_state_threadsafe(state: State):
                 "current_timestamp": state.current_timestamp.replace(microsecond=0).isoformat(),
                 "prev_temp": state.prev_temp,
                 "prev_timestamp": state.prev_timestamp.replace(microsecond=0).isoformat(),
-                "temp_measure_eriod": state.temp_measure_period,
+                "temp_measure_period": state.temp_measure_period,
                 "consecutive_measures": state.consecutive_measures
             }, f, indent=4)
 
