@@ -6,10 +6,12 @@ from app.repositories.state_repo import *
 from app.constants import DAYS_OF_WEEK
 from app.mqtt import client, mqtt_service
 from time import sleep
+import threading
+import uvicorn
 
 
-def main():
-
+def start_mqtt_client():
+    """Start MQTT client in the background"""
     # Inject the MQTT client into the service
     mqtt_service.init(client.client)
 
@@ -19,9 +21,15 @@ def main():
     state = load_state_threadsafe()
     print_state(state)
 
+
+def main():
+    # Start MQTT client in a separate thread
+    mqtt_thread = threading.Thread(target=start_mqtt_client, daemon=True)
+    mqtt_thread.start()
+
+    # Start FastAPI web server (this will block)
     try:
-        while True:
-            sleep(10)
+        uvicorn.run("app.server:app", host="0.0.0.0", port=8000, reload=True)
     except KeyboardInterrupt:
         print("Shutting down...")
         client.watchdog_stop_event.set()

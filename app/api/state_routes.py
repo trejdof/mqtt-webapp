@@ -57,7 +57,7 @@ def get_active_interval_details():
     try:
         state = state_repo.load_state_threadsafe()
         config = config_repo.load_config(state.selected_config)
-        
+
         if state.active_interval:
             interval_obj = config_repo.get_interval_obj(config, state.active_interval)
             return {
@@ -71,3 +71,28 @@ def get_active_interval_details():
             return {"active_interval": None}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error getting interval details: {str(e)}")
+
+
+@router.get("/state/active-config")
+def get_active_config():
+    """Get the complete active configuration"""
+    try:
+        state = state_repo.load_state_threadsafe()
+
+        if not state.selected_config:
+            return {"config_name": None, "config": None}
+
+        # Get the raw config data (dictionary format)
+        all_configs = config_repo.load_all_configs()
+        config_data = all_configs.get(state.selected_config)
+
+        if config_data:
+            return {
+                "config_name": state.selected_config,
+                "config": config_data
+            }
+        else:
+            return {"config_name": state.selected_config, "config": None}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting active config: {str(e)}")
