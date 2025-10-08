@@ -6,6 +6,7 @@ h11==0.16.0
 idna==3.10
 iniconfig==2.1.0
 packaging==25.0
+paho-mqtt==2.1.0
 pluggy==1.6.0
 pydantic==2.11.5
 pydantic_core==2.33.2
