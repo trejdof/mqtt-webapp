@@ -1,0 +1,40 @@
+// API Configuration
+const API_BASE = window.location.origin;
+
+// State API
+async function fetchState() {
+    const response = await fetch(`${API_BASE}/state`);
+    return await response.json();
+}
+
+async function fetchActiveIntervalDetails() {
+    const response = await fetch(`${API_BASE}/state/active-interval-details`);
+    return await response.json();
+}
+
+async function fetchActiveConfig() {
+    const response = await fetch(`${API_BASE}/state/active-config`);
+    return await response.json();
+}
+
+async function selectConfig(configName) {
+    const response = await fetch(`${API_BASE}/state/select-config`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ config_name: configName })
+    });
+    return { response, data: await response.json() };
+}
+
+// Config API
+async function fetchAllConfigs() {
+    const response = await fetch(`${API_BASE}/configs`);
+    return { response, data: await response.json() };
+}
+
+async function fetchConfig(name) {
+    const response = await fetch(`${API_BASE}/configs/${name}`);
+    return await response.json();
+}
