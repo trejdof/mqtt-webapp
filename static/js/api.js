@@ -58,3 +58,14 @@ async function deleteConfig(name) {
     });
     return { response, data: await response.json() };
 }
+
+async function updateConfig(name, configData) {
+    const response = await fetch(`${API_BASE}/configs/${name}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(configData)
+    });
+    return { response, data: await response.json() };
+}

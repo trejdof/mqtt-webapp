@@ -3,28 +3,14 @@
         "monday": [
             {
                 "start_time": {
-                    "hour": 8,
-                    "minute": 0,
-                    "timestamp": 480
-                },
-                "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 19,
-                "OFF_temperature": 21
-            },
-            {
-                "start_time": {
                     "hour": 19,
                     "minute": 31,
                     "timestamp": 1171
                 },
                 "end_time": {
-                    "hour": 7,
-                    "minute": 59,
-                    "timestamp": 479
+                    "hour": 19,
+                    "minute": 30,
+                    "timestamp": 1170
                 },
                 "ON_temperature": 19,
                 "OFF_temperature": 21
@@ -38,26 +24,12 @@
                     "timestamp": 480
                 },
                 "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 19,
-                "OFF_temperature": 21
-            },
-            {
-                "start_time": {
-                    "hour": 19,
-                    "minute": 31,
-                    "timestamp": 1171
-                },
-                "end_time": {
                     "hour": 7,
                     "minute": 59,
                     "timestamp": 479
                 },
                 "ON_temperature": 19,
-                "OFF_temperature": 20
+                "OFF_temperature": 21
             }
         ],
         "wednesday": [
@@ -128,20 +100,6 @@
                     "timestamp": 480
                 },
                 "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            },
-            {
-                "start_time": {
-                    "hour": 19,
-                    "minute": 31,
-                    "timestamp": 1171
-                },
-                "end_time": {
                     "hour": 7,
                     "minute": 59,
                     "timestamp": 479
@@ -204,7 +162,7 @@
                 "end_time": {
                     "hour": 22,
                     "minute": 35,
-                    "timestamp": 479
+                    "timestamp": 1355
                 },
                 "ON_temperature": 22,
                 "OFF_temperature": 18
@@ -213,7 +171,7 @@
                 "start_time": {
                     "hour": 22,
                     "minute": 36,
-                    "timestamp": 1171
+                    "timestamp": 1356
                 },
                 "end_time": {
                     "hour": 7,
@@ -406,6 +364,204 @@
                 },
                 "ON_temperature": 22.0,
                 "OFF_temperature": 21.0
+            }
+        ]
+    },
+    "test": {
+        "monday": [
+            {
+                "start_time": {
+                    "hour": 12,
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 11,
+                    "minute": 59,
+                    "timestamp": 719
+                },
+                "ON_temperature": 22,
+                "OFF_temperature": 21
+            }
+        ],
+        "tuesday": [
+            {
+                "start_time": {
+                    "hour": 0,
+                    "minute": 0,
+                    "timestamp": 0
+                },
+                "end_time": {
+                    "hour": 11,
+                    "minute": 59,
+                    "timestamp": 719
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 19
+            },
+            {
+                "start_time": {
+                    "hour": 12,
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 23,
+                    "minute": 59,
+                    "timestamp": 1439
+                },
+                "ON_temperature": 22,
+                "OFF_temperature": 21
+            }
+        ],
+        "wednesday": [
+            {
+                "start_time": {
+                    "hour": 0,
+                    "minute": 0,
+                    "timestamp": 0
+                },
+                "end_time": {
+                    "hour": 11,
+                    "minute": 59,
+                    "timestamp": 719
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 19
+            },
+            {
+                "start_time": {
+                    "hour": 12,
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 23,
+                    "minute": 59,
+                    "timestamp": 1439
+                },
+                "ON_temperature": 22,
+                "OFF_temperature": 21
+            }
+        ],
+        "thursday": [
+            {
+                "start_time": {
+                    "hour": 0,
+                    "minute": 0,
+                    "timestamp": 0
+                },
+                "end_time": {
+                    "hour": 11,
+                    "minute": 59,
+                    "timestamp": 719
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 19
+            },
+            {
+                "start_time": {
+                    "hour": 12,
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 23,
+                    "minute": 59,
+                    "timestamp": 1439
+                },
+                "ON_temperature": 22,
+                "OFF_temperature": 21
+            }
+        ],
+        "friday": [
+            {
+                "start_time": {
+                    "hour": 0,
+                    "minute": 0,
+                    "timestamp": 0
+                },
+                "end_time": {
+                    "hour": 11,
+                    "minute": 59,
+                    "timestamp": 719
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 19
+            },
+            {
+                "start_time": {
+                    "hour": 12,
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 23,
+                    "minute": 59,
+                    "timestamp": 1439
+                },
+                "ON_temperature": 22,
+                "OFF_temperature": 21
+            }
+        ],
+        "saturday": [
+            {
+                "start_time": {
+                    "hour": 0,
+                    "minute": 0,
+                    "timestamp": 0
+                },
+                "end_time": {
+                    "hour": 11,
+                    "minute": 59,
+                    "timestamp": 719
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 19
+            },
+            {
+                "start_time": {
+                    "hour": 12,
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 23,
+                    "minute": 59,
+                    "timestamp": 1439
+                },
+                "ON_temperature": 22,
+                "OFF_temperature": 21
+            }
+        ],
+        "sunday": [
+            {
+                "start_time": {
+                    "hour": 0,
+                    "minute": 0,
+                    "timestamp": 0
+                },
+                "end_time": {
+                    "hour": 11,
+                    "minute": 59,
+                    "timestamp": 719
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 19
+            },
+            {
+                "start_time": {
+                    "hour": 12,
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 23,
+                    "minute": 59,
+                    "timestamp": 1439
+                },
+                "ON_temperature": 22,
+                "OFF_temperature": 21
             }
         ]
     }

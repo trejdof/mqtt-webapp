@@ -165,7 +165,21 @@ async function openChangeConfigModal() {
                         </div>
                         <div class="config-details">
                             <div class="config-details-content">
-                                ${detailsHtml}
+                                <div class="config-details-header">
+                                    <button class="btn-edit-config" data-config="${configName}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                        Edit Schedule
+                                    </button>
+                                </div>
+                                <div class="config-view-mode">
+                                    ${detailsHtml}
+                                </div>
+                                <div class="config-edit-mode" style="display: none;">
+                                    <!-- Edit mode content will be populated here -->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -182,12 +196,21 @@ async function openChangeConfigModal() {
             const expandIcon = item.querySelector('.expand-icon');
             const details = item.querySelector('.config-details');
             const deleteBtn = item.querySelector('.delete-config-btn');
+            const editBtn = item.querySelector('.btn-edit-config');
+            const configName = item.getAttribute('data-config');
+            const configData = configs[configName];
 
             // Delete button handler
             deleteBtn.addEventListener('click', async function(e) {
                 e.stopPropagation();
                 const configName = this.getAttribute('data-config');
                 await handleDeleteConfig(configName, currentConfig);
+            });
+
+            // Edit button handler
+            editBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                enterEditMode(item, configName, configData);
             });
 
             // Click on header to select
@@ -305,4 +328,433 @@ async function handleDeleteConfig(configName, currentConfig) {
         console.error('Error deleting configuration:', error);
         showMessage('Failed to delete configuration', 'error');
     }
+}
+
+// Edit mode functions
+function enterEditMode(item, configName, configData) {
+    const viewMode = item.querySelector('.config-view-mode');
+    const editMode = item.querySelector('.config-edit-mode');
+    const editBtn = item.querySelector('.btn-edit-config');
+
+    // Hide view mode, show edit mode
+    viewMode.style.display = 'none';
+    editMode.style.display = 'block';
+    editBtn.style.display = 'none';
+
+    // Build edit UI
+    const editHtml = buildEditModeHtml(configData);
+    editMode.innerHTML = editHtml;
+
+    // Add event listeners for edit mode controls
+    setupEditModeHandlers(editMode, item, configName, configData);
+}
+
+function exitEditMode(item) {
+    const viewMode = item.querySelector('.config-view-mode');
+    const editMode = item.querySelector('.config-edit-mode');
+    const editBtn = item.querySelector('.btn-edit-config');
+
+    // Show view mode, hide edit mode
+    viewMode.style.display = 'block';
+    editMode.style.display = 'none';
+    editBtn.style.display = 'inline-flex';
+}
+
+function buildEditModeHtml(configData) {
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    let html = '<div class="edit-mode-container">';
+
+    html += '<div class="edit-mode-actions">';
+    html += '<button class="btn btn-primary save-edit-btn">Save Changes</button>';
+    html += '<button class="btn btn-secondary cancel-edit-btn">Cancel</button>';
+    html += '</div>';
+
+    days.forEach(day => {
+        const intervals = configData[day] || [];
+        html += `<div class="day-edit-section" data-day="${day}">`;
+        html += `<div class="day-edit-header">`;
+        html += `<span class="day-name">${day.charAt(0).toUpperCase() + day.slice(1)}</span>`;
+        html += `<button class="btn-add-interval" data-day="${day}">+ Add Interval</button>`;
+        html += `</div>`;
+        html += `<div class="intervals-edit">`;
+
+        intervals.forEach((interval, idx) => {
+            html += buildIntervalEditHtml(day, idx, interval);
+        });
+
+        html += `</div></div>`;
+    });
+
+    html += '</div>';
+    return html;
+}
+
+function buildIntervalEditHtml(day, index, interval) {
+    const startHour = String(interval.start_time.hour).padStart(2, '0');
+    const startMin = String(interval.start_time.minute).padStart(2, '0');
+    const endHour = String(interval.end_time.hour).padStart(2, '0');
+    const endMin = String(interval.end_time.minute).padStart(2, '0');
+
+    return `
+        <div class="interval-edit-item" data-day="${day}" data-index="${index}">
+            <div class="interval-edit-row">
+                <div class="interval-time-edit">
+                    <label>Start:</label>
+                    <input type="time" class="interval-start-time" value="${startHour}:${startMin}">
+                    <label>End:</label>
+                    <input type="time" class="interval-end-time" value="${endHour}:${endMin}">
+                </div>
+                <div class="interval-temp-edit">
+                    <label>ON:</label>
+                    <input type="number" class="interval-on-temp" value="${interval.ON_temperature}" step="0.5" min="0" max="50">
+                    <label>°C</label>
+                    <label>OFF:</label>
+                    <input type="number" class="interval-off-temp" value="${interval.OFF_temperature}" step="0.5" min="0" max="50">
+                    <label>°C</label>
+                </div>
+                <button class="btn-delete-interval" data-day="${day}" data-index="${index}">
+                    Remove Interval
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+function setupEditModeHandlers(editMode, item, configName, configData) {
+    // Save button
+    const saveBtn = editMode.querySelector('.save-edit-btn');
+    saveBtn.addEventListener('click', function() {
+        saveConfigChanges(editMode, item, configName);
+    });
+
+    // Cancel button
+    const cancelBtn = editMode.querySelector('.cancel-edit-btn');
+    cancelBtn.addEventListener('click', function() {
+        exitEditMode(item);
+    });
+
+    // Add interval buttons
+    editMode.querySelectorAll('.btn-add-interval').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const day = this.getAttribute('data-day');
+            addNewInterval(editMode, day, configData);
+        });
+    });
+
+    // Delete interval buttons
+    editMode.querySelectorAll('.btn-delete-interval').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const day = this.getAttribute('data-day');
+            const index = this.getAttribute('data-index');
+            deleteInterval(editMode, day, index, configData);
+        });
+    });
+
+    // Add real-time validation on input change
+    setupRealtimeValidation(editMode);
+}
+
+function setupRealtimeValidation(editMode) {
+    // Listen to all time and temperature inputs
+    const allInputs = editMode.querySelectorAll('.interval-start-time, .interval-end-time, .interval-on-temp, .interval-off-temp');
+
+    allInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            // Debounce validation slightly
+            clearTimeout(input.validationTimeout);
+            input.validationTimeout = setTimeout(() => {
+                validateInRealtime(editMode);
+            }, 300);
+        });
+
+        input.addEventListener('blur', function() {
+            // Immediate validation on blur
+            validateInRealtime(editMode);
+        });
+    });
+}
+
+function validateInRealtime(editMode) {
+    // Clear all previous error states
+    editMode.querySelectorAll('.day-edit-section').forEach(section => {
+        section.classList.remove('has-error');
+        const existingError = section.querySelector('.day-validation-error');
+        if (existingError) {
+            existingError.remove();
+        }
+    });
+
+    editMode.querySelectorAll('.interval-edit-item').forEach(item => {
+        item.classList.remove('has-error');
+    });
+
+    editMode.querySelectorAll('input').forEach(input => {
+        input.classList.remove('error');
+    });
+
+    // Collect and validate data
+    const updatedConfig = collectIntervalData(editMode);
+    const error = validateConfigurationDetailed(updatedConfig, editMode);
+
+    // No errors - all good!
+    if (!error) {
+        return true;
+    }
+
+    return false;
+}
+
+// Enhanced validation that marks specific fields with errors
+function validateConfigurationDetailed(config, editMode) {
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+    for (const day of days) {
+        const intervals = config[day];
+        const daySection = editMode.querySelector(`.day-edit-section[data-day="${day}"]`);
+
+        // Rule 1: No empty intervals
+        if (!intervals || intervals.length === 0) {
+            markDayError(daySection, `Must have at least one interval`);
+            return true;
+        }
+
+        // Rule 2: Check continuous coverage and wrap-around
+        const firstStart = intervals[0].start_time.timestamp;
+        const lastEnd = intervals[intervals.length - 1].end_time.timestamp;
+        const expectedFirstStart = (lastEnd + 1) % (24 * 60);
+
+        if (firstStart !== expectedFirstStart) {
+            // Calculate what the last interval end should be
+            const expectedLastEnd = (firstStart - 1 + 24 * 60) % (24 * 60);
+
+            markDayError(daySection, `Must cover full 24 hours. Last interval should end at ${formatTimestamp(expectedLastEnd)}`);
+            // Mark last interval as error
+            const lastInterval = daySection.querySelector(`.interval-edit-item[data-index="${intervals.length - 1}"]`);
+            if (lastInterval) {
+                lastInterval.classList.add('has-error');
+                lastInterval.querySelector('.interval-end-time').classList.add('error');
+            }
+            return true;
+        }
+
+        // Rule 3: Check continuity between intervals
+        let midnightCrossings = 0;
+        for (let i = 0; i < intervals.length; i++) {
+            const current = intervals[i];
+            const start = current.start_time.timestamp;
+            const end = current.end_time.timestamp;
+
+            // Check for midnight crossing
+            if (start > end) {
+                midnightCrossings++;
+                if (midnightCrossings > 1) {
+                    markDayError(daySection, `Only one interval can cross midnight`);
+                    return true;
+                }
+            }
+
+            // Check continuity with previous interval
+            if (i > 0) {
+                const prevEnd = intervals[i - 1].end_time.timestamp;
+                const expectedStart = (prevEnd + 1) % (24 * 60);
+
+                if (start !== expectedStart) {
+                    markDayError(daySection, `Gap between intervals. This interval should start at ${formatTimestamp(expectedStart)}`);
+                    // Mark the problematic interval
+                    const intervalItem = daySection.querySelector(`.interval-edit-item[data-index="${i}"]`);
+                    if (intervalItem) {
+                        intervalItem.classList.add('has-error');
+                        intervalItem.querySelector('.interval-start-time').classList.add('error');
+                    }
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false; // No errors
+}
+
+function markDayError(daySection, message) {
+    daySection.classList.add('has-error');
+
+    // Add error message if not already present
+    if (!daySection.querySelector('.day-validation-error')) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'day-validation-error';
+        errorDiv.textContent = message;
+        daySection.querySelector('.intervals-edit').insertAdjacentElement('afterend', errorDiv);
+    }
+}
+
+function addNewInterval(editMode, day, configData) {
+    showMessage('Add interval functionality coming soon', 'error');
+    // TODO: Implement add interval logic
+}
+
+function deleteInterval(editMode, day, index, configData) {
+    const intervals = configData[day];
+    if (intervals.length <= 1) {
+        showMessage(`Cannot delete the only interval for ${day}`, 'error');
+        return;
+    }
+
+    // Remove interval from data
+    intervals.splice(index, 1);
+
+    // Rebuild the day's intervals UI
+    const daySection = editMode.querySelector(`.day-edit-section[data-day="${day}"]`);
+    const intervalsContainer = daySection.querySelector('.intervals-edit');
+    intervalsContainer.innerHTML = '';
+    intervals.forEach((interval, idx) => {
+        intervalsContainer.innerHTML += buildIntervalEditHtml(day, idx, interval);
+    });
+
+    // Re-attach delete handlers
+    intervalsContainer.querySelectorAll('.btn-delete-interval').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const day = this.getAttribute('data-day');
+            const index = this.getAttribute('data-index');
+            deleteInterval(editMode, day, index, configData);
+        });
+    });
+
+    // Re-attach real-time validation to new inputs
+    setupRealtimeValidation(editMode);
+
+    // Validate immediately after deletion
+    validateInRealtime(editMode);
+}
+
+async function saveConfigChanges(editMode, item, configName) {
+    // Gather all interval data from the form
+    const updatedConfig = collectIntervalData(editMode);
+
+    // Validate the configuration
+    const validationError = validateConfiguration(updatedConfig);
+    if (validationError) {
+        showMessage(validationError, 'error');
+        return;
+    }
+
+    // Send to API
+    try {
+        const { response, data } = await updateConfig(configName, updatedConfig);
+
+        if (response.ok) {
+            showMessage(`Configuration "${configName}" saved successfully`, 'success');
+
+            // Update the view mode with new data
+            const viewMode = item.querySelector('.config-view-mode');
+            viewMode.innerHTML = buildConfigDetailsHtml(updatedConfig);
+
+            // Exit edit mode
+            exitEditMode(item);
+        } else {
+            showMessage(`Error saving: ${data.detail}`, 'error');
+        }
+    } catch (error) {
+        console.error('Error saving configuration:', error);
+        showMessage('Failed to save configuration', 'error');
+    }
+}
+
+// Utility: Calculate timestamp from hour and minute
+function calculateTimestamp(hour, minute) {
+    return hour * 60 + minute;
+}
+
+// Utility: Parse time input (HH:MM) to hour and minute
+function parseTimeInput(timeString) {
+    const [hour, minute] = timeString.split(':').map(Number);
+    return { hour, minute, timestamp: calculateTimestamp(hour, minute) };
+}
+
+// Collect all interval data from the edit mode form
+function collectIntervalData(editMode) {
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    const config = {};
+
+    days.forEach(day => {
+        const daySection = editMode.querySelector(`.day-edit-section[data-day="${day}"]`);
+        const intervalItems = daySection.querySelectorAll('.interval-edit-item');
+
+        config[day] = [];
+        intervalItems.forEach(item => {
+            const startTime = item.querySelector('.interval-start-time').value;
+            const endTime = item.querySelector('.interval-end-time').value;
+            const onTemp = parseFloat(item.querySelector('.interval-on-temp').value);
+            const offTemp = parseFloat(item.querySelector('.interval-off-temp').value);
+
+            const start = parseTimeInput(startTime);
+            const end = parseTimeInput(endTime);
+
+            config[day].push({
+                start_time: { hour: start.hour, minute: start.minute, timestamp: start.timestamp },
+                end_time: { hour: end.hour, minute: end.minute, timestamp: end.timestamp },
+                ON_temperature: onTemp,
+                OFF_temperature: offTemp
+            });
+        });
+    });
+
+    return config;
+}
+
+// Validate configuration following backend rules
+function validateConfiguration(config) {
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+    for (const day of days) {
+        const intervals = config[day];
+
+        // Rule 1: No empty intervals
+        if (!intervals || intervals.length === 0) {
+            return `${day.charAt(0).toUpperCase() + day.slice(1)} must have at least one interval`;
+        }
+
+        // Rule 2: Check continuous coverage and wrap-around
+        const firstStart = intervals[0].start_time.timestamp;
+        const lastEnd = intervals[intervals.length - 1].end_time.timestamp;
+        const expectedFirstStart = (lastEnd + 1) % (24 * 60);
+
+        if (firstStart !== expectedFirstStart) {
+            return `${day.charAt(0).toUpperCase() + day.slice(1)}: Intervals must cover full 24 hours with no gaps. First interval should start at ${formatTimestamp(expectedFirstStart)}, but starts at ${formatTimestamp(firstStart)}`;
+        }
+
+        // Rule 3: Check continuity between intervals
+        let midnightCrossings = 0;
+        for (let i = 0; i < intervals.length; i++) {
+            const current = intervals[i];
+            const start = current.start_time.timestamp;
+            const end = current.end_time.timestamp;
+
+            // Check for midnight crossing
+            if (start > end) {
+                midnightCrossings++;
+                if (midnightCrossings > 1) {
+                    return `${day.charAt(0).toUpperCase() + day.slice(1)}: Only one interval per day can cross midnight`;
+                }
+            }
+
+            // Check continuity with previous interval
+            if (i > 0) {
+                const prevEnd = intervals[i - 1].end_time.timestamp;
+                const expectedStart = (prevEnd + 1) % (24 * 60);
+
+                if (start !== expectedStart) {
+                    return `${day.charAt(0).toUpperCase() + day.slice(1)}: Gap between intervals ${i} and ${i + 1}. Interval ${i + 1} should start at ${formatTimestamp(expectedStart)}, but starts at ${formatTimestamp(start)}`;
+                }
+            }
+        }
+    }
+
+    return null; // No errors
+}
+
+// Format timestamp (minutes from midnight) to HH:MM
+function formatTimestamp(timestamp) {
+    const hour = Math.floor(timestamp / 60);
+    const minute = timestamp % 60;
+    return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 }
