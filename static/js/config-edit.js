@@ -81,9 +81,15 @@ function buildIntervalEditHtml(day, index, interval) {
             <div class="interval-edit-row">
                 <div class="interval-time-edit">
                     <label>Start:</label>
-                    <input type="time" class="interval-start-time" value="${startHour}:${startMin}">
+                    <div class="time-input-wrapper">
+                        <input type="text" class="interval-start-time" value="${startHour}:${startMin}" pattern="[0-2][0-9]:[0-5][0-9]" maxlength="5" placeholder="HH:MM">
+                        <input type="time" class="interval-start-time-picker" value="${startHour}:${startMin}" step="60">
+                    </div>
                     <label>End:</label>
-                    <input type="time" class="interval-end-time" value="${endHour}:${endMin}">
+                    <div class="time-input-wrapper">
+                        <input type="text" class="interval-end-time" value="${endHour}:${endMin}" pattern="[0-2][0-9]:[0-5][0-9]" maxlength="5" placeholder="HH:MM">
+                        <input type="time" class="interval-end-time-picker" value="${endHour}:${endMin}" step="60">
+                    </div>
                 </div>
                 <div class="interval-temp-edit">
                     <label>ON:</label>
@@ -131,8 +137,40 @@ function setupEditModeHandlers(editMode, item, configName, configData) {
         });
     });
 
+    // Setup time input synchronization
+    setupTimeInputSync(editMode);
+
     // Add real-time validation on input change
     setupRealtimeValidation(editMode);
+}
+
+function setupTimeInputSync(editMode) {
+    // Sync time picker with text input on mobile
+    editMode.querySelectorAll('.time-input-wrapper').forEach(wrapper => {
+        const textInput = wrapper.querySelector('input[type="text"]');
+        const timePickerInput = wrapper.querySelector('input[type="time"]');
+
+        // When time picker changes (mobile), update the text input and trigger validation
+        timePickerInput.addEventListener('change', function() {
+            textInput.value = this.value;
+            // Trigger input event on text field to ensure validation runs
+            textInput.dispatchEvent(new Event('input', { bubbles: true }));
+            textInput.dispatchEvent(new Event('blur', { bubbles: true }));
+        });
+
+        timePickerInput.addEventListener('input', function() {
+            textInput.value = this.value;
+            // Trigger input event on text field to ensure validation runs
+            textInput.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        // When text input changes (desktop typing), update the picker
+        textInput.addEventListener('input', function() {
+            if (this.value.match(/^[0-2][0-9]:[0-5][0-9]$/)) {
+                timePickerInput.value = this.value;
+            }
+        });
+    });
 }
 
 function addNewInterval(editMode, day, configData) {
