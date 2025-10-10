@@ -10,6 +10,12 @@ function enterEditMode(item, configName, configData) {
     editMode.style.display = 'block';
     editBtn.style.display = 'none';
 
+    // Hide modal footer to maximize screen space
+    const modalFooter = document.querySelector('#change-config-modal .modal-footer');
+    if (modalFooter) {
+        modalFooter.style.display = 'none';
+    }
+
     // Build edit UI
     const editHtml = buildEditModeHtml(configData);
     editMode.innerHTML = editHtml;
@@ -27,6 +33,12 @@ function exitEditMode(item) {
     viewMode.style.display = 'block';
     editMode.style.display = 'none';
     editBtn.style.display = 'inline-flex';
+
+    // Show modal footer again
+    const modalFooter = document.querySelector('#change-config-modal .modal-footer');
+    if (modalFooter) {
+        modalFooter.style.display = 'flex';
+    }
 }
 
 function buildEditModeHtml(configData) {

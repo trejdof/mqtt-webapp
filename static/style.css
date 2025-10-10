@@ -574,16 +574,17 @@ body {
 }
 
 .day-edit-section {
-    margin-bottom: 20px;
-    padding: 16px;
-    background: #f9f9f9;
-    border-radius: 6px;
-    border: 1px solid #e0e0e0;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.day-edit-section:last-child {
+    border-bottom: none;
 }
 
 .day-edit-section.has-error {
-    border-color: #dc2626;
-    background: #fef2f2;
+    border-bottom-color: #dc2626;
 }
 
 .day-validation-error {
@@ -601,7 +602,14 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+}
+
+.day-edit-header .day-name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    text-transform: capitalize;
 }
 
 .btn-add-interval {
@@ -609,7 +617,7 @@ body {
     font-size: 0.8125rem;
     font-weight: 500;
     color: #059669;
-    background: white;
+    background: transparent;
     border: 1px solid #059669;
     border-radius: 4px;
     cursor: pointer;
@@ -628,10 +636,12 @@ body {
 }
 
 .interval-edit-item {
-    background: white;
-    border: 1px solid #d4d4d4;
-    border-radius: 6px;
-    padding: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.interval-edit-item:last-child {
+    border-bottom: none;
 }
 
 .interval-edit-row {
@@ -688,8 +698,7 @@ body {
 }
 
 .interval-edit-item.has-error {
-    border-color: #dc2626;
-    background: #fef2f2;
+    border-bottom-color: #dc2626;
 }
 
 .btn-delete-interval {
@@ -818,33 +827,40 @@ body {
         gap: 12px;
     }
 
-    .interval-time-edit,
-    .interval-temp-edit {
-        flex-direction: column;
-        align-items: flex-start;
+    .interval-time-edit {
+        display: grid;
+        grid-template-columns: auto 1fr auto 1fr;
+        gap: 6px 8px;
+        align-items: center;
         width: 100%;
-        gap: 8px;
+    }
+
+    .interval-temp-edit {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto 1fr auto;
+        gap: 6px 8px;
+        align-items: center;
+        width: 100%;
     }
 
     .interval-time-edit label,
     .interval-temp-edit label {
         font-size: 0.75rem;
-        margin-bottom: -4px;
+        font-weight: 500;
+        color: #737373;
+        white-space: nowrap;
     }
 
     .interval-time-edit input[type="time"] {
         width: 100%;
-        max-width: 200px;
-    }
-
-    .interval-temp-edit {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 6px;
+        min-width: 0;
+        font-size: 0.875rem;
+        padding: 6px 8px;
     }
 
     .interval-temp-edit input[type="number"] {
-        width: 80px;
+        width: 100%;
+        min-width: 0;
     }
 
     .btn-delete-interval {
