@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.repositories import state_repo, config_repo
 from app.models.time import Time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 router = APIRouter()
 
@@ -10,6 +10,13 @@ def get_state():
     """Get current system state"""
     try:
         state = state_repo.load_state_threadsafe()
+        # Get server's current date and time
+        server_time = datetime.now()
+
+        # Check if temperature reading is stale (older than 1 minute)
+        time_since_last_temp = server_time - state.current_timestamp
+        is_temp_stale = time_since_last_temp > timedelta(minutes=1)
+
         return {
             "selected_config": state.selected_config,
             "active_interval": state.active_interval,
@@ -19,7 +26,9 @@ def get_state():
             "prev_temp": state.prev_temp,
             "prev_timestamp": state.prev_timestamp.isoformat(),
             "temp_measure_period": state.temp_measure_period,
-            "consecutive_measures": state.consecutive_measures
+            "consecutive_measures": state.consecutive_measures,
+            "server_time": server_time.isoformat(),
+            "is_temp_stale": is_temp_stale
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading state: {str(e)}")

@@ -46,11 +46,23 @@
             </div>
 
             <!-- Temperature Card -->
-            <div class="card">
+            <div class="card" id="temp-card">
                 <h2 class="card-title">Temperature</h2>
                 <div class="temp-display">
+                    <div id="temp-stale-warning" class="temp-stale-warning" style="display: none;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <span>No temperature data received in over 1 minute</span>
+                    </div>
                     <div class="current-temp" id="current-temp">--°C</div>
                     <div id="temp-info">No data</div>
+                    <div class="temp-timestamp">
+                        <span class="temp-timestamp-label">Last measurement:</span>
+                        <span id="temp-timestamp-value">--</span>
+                    </div>
                 </div>
             </div>
 

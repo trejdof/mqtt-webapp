@@ -36,9 +36,30 @@ function updateStatusDisplay(state) {
         tempInfo.style.color = '#718096';
     }
 
-    // Update title with timestamp
+    // Update temperature timestamp
     const lastUpdate = new Date(state.current_timestamp);
-    document.getElementById('status-title').textContent = `System Status - ${lastUpdate.toLocaleTimeString()}`;
+    const tempDateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const tempDateStr = lastUpdate.toLocaleDateString(undefined, tempDateOptions);
+    const tempTimeStr = lastUpdate.toLocaleTimeString(undefined, { hour12: false });
+    document.getElementById('temp-timestamp-value').textContent = `${tempDateStr} ${tempTimeStr}`;
+
+    // Update temperature stale warning
+    const staleWarning = document.getElementById('temp-stale-warning');
+    const tempCard = document.getElementById('temp-card');
+    if (state.is_temp_stale) {
+        staleWarning.style.display = 'flex';
+        tempCard.classList.add('temp-card-warning');
+    } else {
+        staleWarning.style.display = 'none';
+        tempCard.classList.remove('temp-card-warning');
+    }
+
+    // Update system status title with server time
+    const serverTime = new Date(state.server_time);
+    const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+    const dateStr = serverTime.toLocaleDateString(undefined, dateOptions);
+    const timeStr = serverTime.toLocaleTimeString(undefined, { hour12: false });
+    document.getElementById('status-title').textContent = `System Status - ${dateStr} ${timeStr}`;
 }
 
 function updateActiveIntervalDisplay(intervalData) {
