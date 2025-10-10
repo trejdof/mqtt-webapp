@@ -49,11 +49,42 @@ function setupChangeConfigModal() {
     const cancelBtn = document.getElementById('cancel-change-btn');
     const confirmBtn = document.getElementById('confirm-change-btn');
     const changeConfigBtn = document.getElementById('change-config-btn');
+    const addConfigBtn = document.getElementById('add-config-btn');
 
     // Open modal
     changeConfigBtn.onclick = function() {
         openChangeConfigModal();
     }
+
+    // Add new config
+    addConfigBtn.onclick = async function() {
+        const configName = prompt('Enter a name for the new configuration:');
+
+        if (!configName) {
+            return; // User cancelled
+        }
+
+        // Validate name
+        if (configName.trim() === '') {
+            showMessage('Configuration name cannot be empty', 'error');
+            return;
+        }
+
+        try {
+            const { response, data } = await createConfig(configName.trim());
+
+            if (response.ok) {
+                showMessage(`Configuration "${configName}" created with default intervals`, 'success');
+                // Reload the modal to show the new config
+                await openChangeConfigModal();
+            } else {
+                showMessage(`Error: ${data.detail}`, 'error');
+            }
+        } catch (error) {
+            console.error('Error creating configuration:', error);
+            showMessage('Failed to create configuration', 'error');
+        }
+    };
 
     // Close modal handlers
     const closeModal = () => {
@@ -120,6 +151,14 @@ async function openChangeConfigModal() {
                         <div class="config-item-header">
                             <input type="radio" name="config-select" value="${configName}" id="config-${configName}" ${isSelected ? 'checked' : ''}>
                             <label for="config-${configName}">${configName}</label>
+                            <button class="delete-config-btn" data-config="${configName}" title="Delete configuration">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
+                            </button>
                             <svg class="expand-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
@@ -142,6 +181,14 @@ async function openChangeConfigModal() {
             const radio = item.querySelector('input[type="radio"]');
             const expandIcon = item.querySelector('.expand-icon');
             const details = item.querySelector('.config-details');
+            const deleteBtn = item.querySelector('.delete-config-btn');
+
+            // Delete button handler
+            deleteBtn.addEventListener('click', async function(e) {
+                e.stopPropagation();
+                const configName = this.getAttribute('data-config');
+                await handleDeleteConfig(configName, currentConfig);
+            });
 
             // Click on header to select
             header.addEventListener('click', function(e) {
@@ -151,6 +198,11 @@ async function openChangeConfigModal() {
                     // Update selected class
                     document.querySelectorAll('.config-list-item').forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
+                    return;
+                }
+
+                // Don't toggle if clicking on delete button
+                if (e.target.closest('.delete-config-btn')) {
                     return;
                 }
 
@@ -219,5 +271,38 @@ async function changeConfiguration(configName) {
     } catch (error) {
         console.error('Error changing configuration:', error);
         showMessage('Failed to change configuration', 'error');
+    }
+}
+
+async function handleDeleteConfig(configName, currentConfig) {
+    // Prevent deletion of currently active config
+    if (configName === currentConfig) {
+        showMessage(`Cannot delete "${configName}" - it is currently active. Please select a different configuration first.`, 'error');
+        return;
+    }
+
+    // Confirmation for deletion
+    const confirmDelete = confirm(
+        `Are you sure you want to delete configuration "${configName}"?\n\n` +
+        `This action cannot be undone.`
+    );
+
+    if (!confirmDelete) {
+        return;
+    }
+
+    try {
+        const { response, data } = await deleteConfig(configName);
+
+        if (response.ok) {
+            showMessage(`Configuration "${configName}" deleted successfully`, 'success');
+            // Reload the modal to refresh the list
+            await openChangeConfigModal();
+        } else {
+            showMessage(`Error: ${data.detail}`, 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting configuration:', error);
+        showMessage('Failed to delete configuration', 'error');
     }
 }

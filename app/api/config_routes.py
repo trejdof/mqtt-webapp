@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from app.repositories import config_repo
+from app.repositories import config_repo, state_repo
 
 router = APIRouter()
 
@@ -28,10 +28,12 @@ def create_config(name: str):
 @router.delete("/configs/{name}")
 def delete_config(name: str):
     try:
-        config_repo.delete_config(name)
+        # Get current state to check if config is active
+        state = state_repo.load_state_threadsafe()
+        config_repo.delete_config(name, current_selected_config=state.selected_config)
         return {"status": "deleted", "name": name}
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.put("/configs/{name}")

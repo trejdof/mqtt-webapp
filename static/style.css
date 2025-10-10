@@ -296,6 +296,25 @@ body {
     background: #fafafa;
 }
 
+.btn-add-config {
+    background: #059669;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.btn-add-config:hover {
+    background: #047857;
+}
+
+.btn-add-config svg {
+    flex-shrink: 0;
+}
+
 .config-list-item {
     border: 2px solid #e0e0e0;
     border-radius: 6px;
@@ -318,6 +337,27 @@ body {
     align-items: center;
     gap: 12px;
     cursor: pointer;
+}
+
+.delete-config-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    margin-left: auto;
+    color: #737373;
+    background: transparent;
+    border: 1px solid #d4d4d4;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.delete-config-btn:hover {
+    color: #dc2626;
+    border-color: #dc2626;
+    background: #fef2f2;
 }
 
 .config-item-header:hover {

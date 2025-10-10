@@ -1,6 +1,6 @@
 {
-    "selected_configuration": "second",
-    "active_interval": "wednesday:1",
+    "selected_configuration": "aaa",
+    "active_interval": "friday:1",
     "boiler_state": true,
     "current_temp": 19.7,
     "current_timestamp": "2025-06-17T23:58:22",

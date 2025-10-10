@@ -38,3 +38,23 @@ async function fetchConfig(name) {
     const response = await fetch(`${API_BASE}/configs/${name}`);
     return await response.json();
 }
+
+async function createConfig(name) {
+    const response = await fetch(`${API_BASE}/configs/${name}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    return { response, data: await response.json() };
+}
+
+async function deleteConfig(name) {
+    const response = await fetch(`${API_BASE}/configs/${name}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    });
+    return { response, data: await response.json() };
+}

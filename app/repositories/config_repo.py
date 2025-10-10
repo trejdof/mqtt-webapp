@@ -4,7 +4,7 @@ from app.models.configuration import Configuration
 from app.models.interval import Interval
 from app.models.time import Time
 from typing import List, Dict
-from app.constants import DAYS_OF_WEEK
+from app.constants import DAYS_OF_WEEK, DEFAULT_INTERVALS
 from datetime import datetime
 
 CONFIG_FILE = Path("storage/configurations.json")
@@ -43,29 +43,35 @@ def parse_intervals(raw_list: List[Dict]) -> List[Interval]:
 
 def create_config(name: str):
     all_configs = load_all_configs()
-    
+
     if name in all_configs:
         raise ValueError(f"Configuration '{name}' already exists.")
 
-    new_config = {day: [] for day in DAYS_OF_WEEK}
+    # Create config with default intervals for each day
+    import copy
+    new_config = {day: copy.deepcopy(DEFAULT_INTERVALS) for day in DAYS_OF_WEEK}
 
     all_configs[name] = new_config
 
     save_all_configs(all_configs)
 
-    print(f"Configuration '{name}' created with empty schedule")
+    print(f"Configuration '{name}' created with default intervals")
 
 
-def delete_config(name: str):
+def delete_config(name: str, current_selected_config: str = None):
     all_configs = load_all_configs()
 
     if name not in all_configs:
         raise ValueError(f"Configuration '{name}' does not exist.")
-    
+
+    # Check if trying to delete the currently active config
+    if current_selected_config and name == current_selected_config:
+        raise ValueError(f"Cannot delete '{name}' - it is currently active. Please select a different configuration first.")
+
     del all_configs[name]
 
     save_all_configs(all_configs)
-    
+
     print(f"Configuration '{name}' has been deleted.")
 
 
