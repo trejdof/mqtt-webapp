@@ -167,7 +167,7 @@ async function saveConfigChanges(editMode, item, configName) {
     const updatedConfig = collectIntervalData(editMode);
 
     // Validate the configuration
-    const validationError = validate Configuration(updatedConfig);
+    const validationError = validateConfiguration(updatedConfig);
     if (validationError) {
         showMessage(validationError, 'error');
         return;

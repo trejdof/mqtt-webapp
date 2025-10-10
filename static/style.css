@@ -52,6 +52,18 @@ body {
     margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-title-text {
+    flex-shrink: 0;
+}
+
+.status-title-time {
+    font-weight: 500;
+    color: #a3a3a3;
 }
 
 .status-grid {
@@ -788,6 +800,16 @@ body {
 
     .btn-add-interval {
         width: 100%;
+    }
+
+    .card-title {
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .status-title-time {
+        text-transform: none;
     }
 
     .interval-edit-row {

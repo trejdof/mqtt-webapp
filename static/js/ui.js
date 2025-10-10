@@ -59,7 +59,7 @@ function updateStatusDisplay(state) {
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     const dateStr = serverTime.toLocaleDateString(undefined, dateOptions);
     const timeStr = serverTime.toLocaleTimeString(undefined, { hour12: false });
-    document.getElementById('status-title').textContent = `System Status - ${dateStr} ${timeStr}`;
+    document.getElementById('status-title-time').textContent = `${dateStr} ${timeStr}`;
 }
 
 function updateActiveIntervalDisplay(intervalData) {
