@@ -74,9 +74,12 @@ function updateActiveIntervalDisplay(intervalData) {
     const activeIntervalElement = document.getElementById('active-interval');
 
     if (intervalData.active_interval) {
+        // Extract day name from "sunday:0" format
+        const dayName = intervalData.active_interval.split(':')[0];
+        const formattedDay = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+
         activeIntervalElement.innerHTML = `
-            <strong>${intervalData.active_interval}</strong><br>
-            <small>${intervalData.start_time} - ${intervalData.end_time}</small><br>
+            <strong>${formattedDay}: ${intervalData.start_time} - ${intervalData.end_time}</strong><br>
             <small>ON: ${intervalData.ON_temperature}°C | OFF: ${intervalData.OFF_temperature}°C</small>
         `;
     } else {
