@@ -69,3 +69,9 @@ async function updateConfig(name, configData) {
     });
     return { response, data: await response.json() };
 }
+
+// Device Status API
+async function fetchDeviceStatus() {
+    const response = await fetch(`${API_BASE}/devices/status`);
+    return await response.json();
+}

@@ -1,0 +1,12 @@
+{
+    "relay": {
+        "status": "offline",
+        "ip_address": "192.168.0.31",
+        "device_id": "relay"
+    },
+    "sensor": {
+        "status": "offline",
+        "ip_address": null,
+        "device_id": null
+    }
+}

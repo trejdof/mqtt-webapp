@@ -1,18 +1,13 @@
 import time
 from threading import Event
 import app.repositories.state_repo as sr
+import app.repositories.device_status_repo as device_repo
 from app.mqtt import mqtt_service
 import threading
 import json
 
 ACK_TIMEOUT = 5
 ack_event = Event()
-
-# Track connected devices
-connected_devices = {
-    "relay": {"status": "offline", "ip_address": None},
-    "sensor": {"status": "offline", "ip_address": None}
-}
 
 def handle_temperature_ping(temp: float):
     print(f"[MQTT] Temperature ping: {temp}")
@@ -54,27 +49,29 @@ def handle_device_status(topic: str, payload: str):
         device_type = data.get("device_type")
         ip_address = data.get("ip_address")
 
-        # Extract device_id from topic (branko/devices/relay_1/status -> relay_1)
+        # Extract device_id from topic (branko/devices/relay/status -> relay)
         device_id = topic.split("/")[2]
 
         if status == "online":
             print(f"[DEVICE STATUS] {device_id} ({device_type}) connected from {ip_address}")
-            if device_type in connected_devices:
-                connected_devices[device_type]["status"] = "online"
-                connected_devices[device_type]["ip_address"] = ip_address
-                connected_devices[device_type]["device_id"] = device_id
+            device_repo.update_device_status(device_type, "online", ip_address, device_id)
         elif status == "offline":
             print(f"[DEVICE STATUS] {device_id} disconnected")
+            # For offline, we need to figure out which device type it is
+            # Try to get it from the payload first, otherwise check existing status
             if device_type:
-                connected_devices[device_type]["status"] = "offline"
+                device_repo.update_device_status(device_type, "offline")
             else:
-                # If device_type not in offline message, try to find by device_id
-                for dev_type, dev_info in connected_devices.items():
-                    if dev_info.get("device_id") == device_id:
-                        connected_devices[dev_type]["status"] = "offline"
-                        break
+                # Check which device has this device_id and mark it offline
+                current_status = device_repo.load_device_status_threadsafe()
+                if current_status.relay.device_id == device_id:
+                    device_repo.update_device_status("relay", "offline")
+                elif current_status.sensor.device_id == device_id:
+                    device_repo.update_device_status("sensor", "offline")
 
-        print(f"[DEVICE STATUS] Current devices: {connected_devices}")
+        # Print current status
+        current_status = device_repo.load_device_status_threadsafe()
+        print(f"[DEVICE STATUS] Current devices: relay={current_status.relay.status}, sensor={current_status.sensor.status}")
 
     except json.JSONDecodeError:
         print(f"[DEVICE STATUS] Invalid JSON payload: {payload}")
@@ -83,4 +80,16 @@ def handle_device_status(topic: str, payload: str):
 
 def get_connected_devices():
     """Return the current status of connected devices"""
-    return connected_devices
+    device_status = device_repo.load_device_status_threadsafe()
+    return {
+        "relay": {
+            "status": device_status.relay.status,
+            "ip_address": device_status.relay.ip_address,
+            "device_id": device_status.relay.device_id
+        },
+        "sensor": {
+            "status": device_status.sensor.status,
+            "ip_address": device_status.sensor.ip_address,
+            "device_id": device_status.sensor.device_id
+        }
+    }

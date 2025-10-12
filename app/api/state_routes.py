@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.repositories import state_repo, config_repo
 from app.models.time import Time
+from app.mqtt import handlers
 from datetime import datetime, timedelta
 
 router = APIRouter()
@@ -105,3 +106,16 @@ def get_active_config():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error getting active config: {str(e)}")
+
+
+@router.get("/devices/status")
+def get_devices_status():
+    """Get status of connected devices (relay and sensor)"""
+    try:
+        devices = handlers.get_connected_devices()
+        return {
+            "relay": devices.get("relay", {"status": "offline", "ip_address": None, "device_id": None}),
+            "sensor": devices.get("sensor", {"status": "offline", "ip_address": None, "device_id": None})
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting device status: {str(e)}")

@@ -954,3 +954,72 @@ input.error {
         width: 100%;
     }
 }
+
+/* ========================================
+   DEVICE STATUS CARD
+   ======================================== */
+.device-status-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xl);
+}
+
+.device-item {
+    padding: var(--gap-xl);
+    background: var(--bg-light);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+.device-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--gap-lg);
+}
+
+.device-name {
+    font-weight: 600;
+    font-size: var(--text-md);
+    color: var(--text-primary);
+}
+
+.device-status-badge {
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    font-weight: 500;
+}
+
+.device-status-badge.online {
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+
+.device-status-badge.offline {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+.device-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-md);
+}
+
+.device-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.device-info-label {
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+}
+
+.device-info-value {
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    font-family: 'Courier New', monospace;
+}
