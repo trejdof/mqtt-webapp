@@ -174,8 +174,62 @@ function setupTimeInputSync(editMode) {
 }
 
 function addNewInterval(editMode, day, configData) {
-    showMessage('Add interval functionality coming soon', 'error');
-    // TODO: Implement add interval logic
+    // Create a new interval with default values
+    const newInterval = {
+        start_time: { hour: 0, minute: 0 },
+        end_time: { hour: 23, minute: 59 },
+        ON_temperature: 20.0,
+        OFF_temperature: 21.0
+    };
+
+    // Add to config data
+    if (!configData[day]) {
+        configData[day] = [];
+    }
+    configData[day].push(newInterval);
+
+    // Get the new index
+    const newIndex = configData[day].length - 1;
+
+    // Rebuild the day's intervals UI
+    const daySection = editMode.querySelector(`.day-edit-section[data-day="${day}"]`);
+    const intervalsContainer = daySection.querySelector('.intervals-edit');
+    intervalsContainer.innerHTML = '';
+    configData[day].forEach((interval, idx) => {
+        intervalsContainer.innerHTML += buildIntervalEditHtml(day, idx, interval);
+    });
+
+    // Re-attach event handlers for all intervals in this day
+    reattachIntervalHandlers(editMode, intervalsContainer, day, configData);
+
+    // Re-attach real-time validation to new inputs
+    setupRealtimeValidation(editMode);
+
+    // Focus on the first input of the new interval
+    const newIntervalElement = intervalsContainer.querySelector(`.interval-edit-item[data-index="${newIndex}"]`);
+    if (newIntervalElement) {
+        const firstInput = newIntervalElement.querySelector('.interval-start-time');
+        if (firstInput) {
+            firstInput.focus();
+            firstInput.select();
+        }
+    }
+
+    showMessage(`New interval added to ${day}`, 'success');
+}
+
+function reattachIntervalHandlers(editMode, intervalsContainer, day, configData) {
+    // Re-attach delete handlers
+    intervalsContainer.querySelectorAll('.btn-delete-interval').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const day = this.getAttribute('data-day');
+            const index = this.getAttribute('data-index');
+            deleteInterval(editMode, day, index, configData);
+        });
+    });
+
+    // Re-attach time input sync
+    setupTimeInputSync(editMode);
 }
 
 function deleteInterval(editMode, day, index, configData) {
@@ -196,14 +250,8 @@ function deleteInterval(editMode, day, index, configData) {
         intervalsContainer.innerHTML += buildIntervalEditHtml(day, idx, interval);
     });
 
-    // Re-attach delete handlers
-    intervalsContainer.querySelectorAll('.btn-delete-interval').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const day = this.getAttribute('data-day');
-            const index = this.getAttribute('data-index');
-            deleteInterval(editMode, day, index, configData);
-        });
-    });
+    // Re-attach event handlers
+    reattachIntervalHandlers(editMode, intervalsContainer, day, configData);
 
     // Re-attach real-time validation to new inputs
     setupRealtimeValidation(editMode);
