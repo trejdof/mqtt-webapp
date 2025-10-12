@@ -227,6 +227,55 @@ body {
     font-weight: 600;
 }
 
+.temp-hysteresis-control {
+    margin-top: var(--gap-lg);
+    padding-top: var(--gap-lg);
+    border-top: 1px solid var(--border-base);
+}
+
+.hysteresis-label {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--gap-md);
+}
+
+.hysteresis-input-group {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-md);
+}
+
+.hysteresis-input {
+    flex: 0 0 auto;
+    width: 80px;
+    padding: var(--gap-md) var(--gap-lg);
+    font-size: var(--text-base);
+    font-weight: 500;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
+    background: var(--bg-card);
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.hysteresis-input:hover {
+    border-color: var(--border-dark);
+}
+
+.hysteresis-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-bg);
+}
+
+.hysteresis-unit {
+    font-size: var(--text-base);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
 .temp-stale-warning {
     display: flex;
     align-items: center;

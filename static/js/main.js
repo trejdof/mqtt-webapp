@@ -11,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup modals
     setupConfigViewModal();
     setupChangeConfigModal();
+
+    // Setup hysteresis input
+    setupHysteresisInput();
 });
 
 async function loadSystemState() {
@@ -27,6 +30,37 @@ async function loadSystemState() {
         showMessage('Failed to connect to server', 'error');
         console.error('Error loading system state:', error);
     }
+}
+
+function setupHysteresisInput() {
+    const input = document.getElementById('hysteresis-input');
+    let timeoutId = null;
+
+    input.addEventListener('input', function() {
+        // Clear existing timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        // Wait 500ms after user stops typing before saving
+        timeoutId = setTimeout(async () => {
+            const value = parseFloat(input.value);
+
+            // Validate value
+            if (isNaN(value) || value < 0 || value > 5) {
+                showMessage('Hysteresis must be between 0 and 5°C', 'error');
+                return;
+            }
+
+            try {
+                await updateHysteresis(value);
+                showMessage('Hysteresis updated successfully', 'success');
+            } catch (error) {
+                showMessage('Failed to update hysteresis', 'error');
+                console.error('Error updating hysteresis:', error);
+            }
+        }, 500);
+    });
 }
 
 async function loadActiveIntervalDetails() {

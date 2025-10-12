@@ -26,7 +26,8 @@ def load_state_threadsafe() -> State:
             prev_temp=state["prev_temp"],
             prev_timestamp=parse_time(state["prev_timestamp"]),
             temp_measure_period=state["temp_measure_period"],
-            consecutive_measures=state["consecutive_measures"]
+            consecutive_measures=state["consecutive_measures"],
+            hysteresis=state.get("hysteresis", 0.5)
         )
 
 
@@ -42,7 +43,8 @@ def save_state_threadsafe(state: State):
                 "prev_temp": state.prev_temp,
                 "prev_timestamp": state.prev_timestamp.replace(microsecond=0).isoformat(),
                 "temp_measure_period": state.temp_measure_period,
-                "consecutive_measures": state.consecutive_measures
+                "consecutive_measures": state.consecutive_measures,
+                "hysteresis": state.hysteresis
             }, f, indent=4)
 
 
@@ -149,3 +151,9 @@ def print_state(state: State):
 
 def boiler_state_str(state: bool) -> str:
     return "ON" if state else "OFF"
+
+
+def update_hysteresis(value: float):
+    state = load_state_threadsafe()
+    state.hysteresis = value
+    save_state_threadsafe(state)

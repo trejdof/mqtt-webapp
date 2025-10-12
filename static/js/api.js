@@ -28,6 +28,17 @@ async function selectConfig(configName) {
     return { response, data: await response.json() };
 }
 
+async function updateHysteresis(value) {
+    const response = await fetch(`${API_BASE}/state/hysteresis`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ hysteresis: value })
+    });
+    return await response.json();
+}
+
 // Config API
 async function fetchAllConfigs() {
     const response = await fetch(`${API_BASE}/configs`);

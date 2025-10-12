@@ -22,6 +22,14 @@ function updateStatusDisplay(state) {
     // Update temperature
     document.getElementById('current-temp').textContent = `${state.current_temp}°C`;
 
+    // Update hysteresis value
+    if (state.hysteresis !== undefined) {
+        const hysteresisInput = document.getElementById('hysteresis-input');
+        if (hysteresisInput && hysteresisInput !== document.activeElement) {
+            hysteresisInput.value = state.hysteresis;
+        }
+    }
+
     // Update temperature info
     const tempChange = state.current_temp - state.prev_temp;
     const tempInfo = document.getElementById('temp-info');

@@ -14,3 +14,4 @@ class State:
     prev_timestamp: datetime
     temp_measure_period: int
     consecutive_measures: int
+    hysteresis: float = 0.5

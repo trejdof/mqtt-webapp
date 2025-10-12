@@ -29,7 +29,8 @@ def get_state():
             "temp_measure_period": state.temp_measure_period,
             "consecutive_measures": state.consecutive_measures,
             "server_time": server_time.isoformat(),
-            "is_temp_stale": is_temp_stale
+            "is_temp_stale": is_temp_stale,
+            "hysteresis": state.hysteresis
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading state: {str(e)}")
@@ -106,6 +107,26 @@ def get_active_config():
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error getting active config: {str(e)}")
+
+
+@router.put("/state/hysteresis")
+def update_hysteresis(data: dict):
+    """Update the hysteresis value"""
+    try:
+        hysteresis = data.get("hysteresis")
+        if hysteresis is None:
+            raise HTTPException(status_code=400, detail="hysteresis is required")
+
+        # Validate value
+        if not isinstance(hysteresis, (int, float)) or hysteresis < 0 or hysteresis > 5:
+            raise HTTPException(status_code=400, detail="hysteresis must be between 0 and 5")
+
+        state_repo.update_hysteresis(float(hysteresis))
+        return {"status": "success", "hysteresis": hysteresis}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating hysteresis: {str(e)}")
 
 
 @router.get("/devices/status")
