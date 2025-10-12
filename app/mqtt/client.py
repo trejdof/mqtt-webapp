@@ -18,18 +18,22 @@ def on_connect(client, userdata, flags, rc):
     print(f"[MQTT] Connected with result code {rc}")
     client.subscribe(topics.SENSOR_TOPIC)
     client.subscribe(topics.ACK_TOPIC)
+    client.subscribe(topics.DEVICE_STATUS_TOPIC_PATTERN)
+    print(f"[MQTT] Subscribed to device status topic: {topics.DEVICE_STATUS_TOPIC_PATTERN}")
 
 def on_message(client, userdata, msg):
     global last_temp_time
     topic = msg.topic
     payload = msg.payload.decode().strip()
-    last_temp_time = datetime.now()
 
     if topic == topics.SENSOR_TOPIC:
+        last_temp_time = datetime.now()
         temp = float(payload)
         handlers.handle_temperature_ping(temp)
     elif topic == topics.ACK_TOPIC:
         handlers.handle_boiler_ack(payload)
+    elif topic.startswith("branko/devices/") and topic.endswith("/status"):
+        handlers.handle_device_status(topic, payload)
 
 def start_temperature_watchdog():
     print("[WATCHDOG] Starting temperature watchdog...")
