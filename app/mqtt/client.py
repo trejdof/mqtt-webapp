@@ -24,7 +24,10 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe(topics.SENSOR_TOPIC)
     client.subscribe(topics.ACK_TOPIC)
     client.subscribe(topics.DEVICE_STATUS_TOPIC_PATTERN)
+    client.subscribe(topics.STATE_REQUEST_TOPIC)
+    client.subscribe(topics.STATE_SYNC_ACK_TOPIC)
     print(f"[MQTT] Subscribed to device status topic: {topics.DEVICE_STATUS_TOPIC_PATTERN}")
+    print(f"[MQTT] Subscribed to state sync topics")
 
 def on_message(client, userdata, msg):
     global last_temp_time
@@ -37,6 +40,10 @@ def on_message(client, userdata, msg):
         handlers.handle_temperature_ping(temp)
     elif topic == topics.ACK_TOPIC:
         handlers.handle_boiler_ack(payload)
+    elif topic == topics.STATE_REQUEST_TOPIC:
+        handlers.handle_state_sync_request(client)
+    elif topic == topics.STATE_SYNC_ACK_TOPIC:
+        handlers.handle_state_sync_ack(payload)
     elif topic.startswith("branko/devices/") and topic.endswith("/status"):
         handlers.handle_device_status(topic, payload)
 

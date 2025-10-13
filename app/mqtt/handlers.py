@@ -2,12 +2,15 @@ import time
 from threading import Event
 import app.repositories.state_repo as sr
 import app.repositories.device_status_repo as device_repo
-from app.mqtt import mqtt_service
+from app.mqtt import mqtt_service, topics
 import threading
 import json
 
 ACK_TIMEOUT = 5
 ack_event = Event()
+
+# Relay sync state
+relay_synced = False
 
 def handle_temperature_ping(temp: float):
     print(f"[MQTT] Temperature ping: {temp}")
@@ -34,7 +37,19 @@ def wait_for_ack_and_toggle():
         print(f"[HANDLER] No ACK received")
 
 def toggle_with_ack():
-    mqtt_service.publish_toggle_command()
+    global relay_synced
+
+    # Block if relay is not synced yet
+    if not relay_synced:
+        print("[HANDLER] Blocked: Relay not synced yet, skipping command")
+        return
+
+    # Determine target state (toggle current state)
+    current_state = sr.load_state_threadsafe()
+    target_state = "OFF" if current_state.boiler_state else "ON"
+
+    # Publish ON or OFF command
+    mqtt_service.publish_boiler_command(target_state)
     wait_for_ack_and_toggle()
 
 def handle_device_status(topic: str, payload: str):
@@ -43,6 +58,8 @@ def handle_device_status(topic: str, payload: str):
     Topic format: branko/devices/{device_id}/status
     Payload format: {"status": "online"/"offline", "device_type": "relay"/"sensor", "ip_address": "192.168.1.x"}
     """
+    global relay_synced
+
     try:
         data = json.loads(payload)
         status = data.get("status")
@@ -57,6 +74,12 @@ def handle_device_status(topic: str, payload: str):
             device_repo.update_device_status(device_type, "online", ip_address, device_id)
         elif status == "offline":
             print(f"[DEVICE STATUS] {device_id} disconnected")
+
+            # If relay goes offline, block commands until it re-syncs
+            if device_type == "relay" or device_id == "relay":
+                relay_synced = False
+                print("[STATE SYNC] Relay disconnected - Relay commands BLOCKED until re-sync")
+
             # For offline, we need to figure out which device type it is
             # Try to get it from the payload first, otherwise check existing status
             if device_type:
@@ -93,3 +116,30 @@ def get_connected_devices():
             "device_id": device_status.sensor.device_id
         }
     }
+
+def handle_state_sync_request(client):
+    """
+    Handle state sync request from ESP32 on boot.
+    Sends current boiler state to ESP32.
+    """
+    print("[STATE SYNC] Received state sync request from ESP32")
+
+    # Get current boiler state from repository
+    current_state = sr.load_state_threadsafe()
+    state_str = "ON" if current_state.boiler_state else "OFF"
+
+    # Publish current state to ESP32
+    client.publish(topics.STATE_RESPONSE_TOPIC, state_str, qos=1)
+    print(f"[STATE SYNC] Sent current state to ESP32: {state_str}")
+
+def handle_state_sync_ack(payload):
+    """
+    Handle ACK from ESP32 after state sync is complete.
+    """
+    global relay_synced
+
+    if payload.strip() == "ACK":
+        relay_synced = True
+        print("[STATE SYNC] ESP32 confirmed state sync successful - Relay commands UNBLOCKED")
+    else:
+        print(f"[STATE SYNC] Unexpected ACK payload: {payload}")

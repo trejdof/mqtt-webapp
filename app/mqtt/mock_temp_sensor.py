@@ -8,7 +8,7 @@ from threading import Thread, Event
 from datetime import datetime
 
 MOCK_SENSOR_TOPIC = "branko/sensor/temperature"
-PUBLISH_INTERVAL = 15  # seconds
+PUBLISH_INTERVAL = 5  # seconds
 TEMP_MIN = 20.0
 TEMP_MAX = 22.0
 

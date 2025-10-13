@@ -29,7 +29,7 @@ def main():
 
     # Start FastAPI web server (this will block)
     try:
-        uvicorn.run("app.server:app", host="0.0.0.0", port=8000, reload=False)
+        uvicorn.run("app.server:app", host="0.0.0.0", port=8000, reload=False, log_level="warning")
     except KeyboardInterrupt:
         print("Shutting down...")
         client.watchdog_stop_event.set()
