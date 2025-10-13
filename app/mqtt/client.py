@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 from app.mqtt import topics, handlers
+from app.mqtt import mock_temp_sensor
 from datetime import datetime, timedelta
 from threading import Thread, Event
 import time
@@ -13,6 +14,10 @@ def start_mqtt():
     client.on_message = on_message
     client.connect("localhost", 1883, 60)
     client.loop_start()
+
+    # Initialize and start mock temperature sensor
+    mock_temp_sensor.init_mock_sensor(client)
+    mock_temp_sensor.start_mock_sensor()
 
 def on_connect(client, userdata, flags, rc):
     print(f"[MQTT] Connected with result code {rc}")
