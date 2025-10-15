@@ -32,8 +32,6 @@ def parse_intervals(raw_list: List[Dict]) -> List[Interval]:
         Interval(
             ON_temperature=float(item["ON_temperature"]),
             OFF_temperature=float(item["OFF_temperature"]),
-            # Time class constructor computes timestamp here
-            # No need to parse it as well. 
             start_time=Time(item["start_time"]["hour"], item["start_time"]["minute"]),
             end_time=Time(item["end_time"]["hour"], item["end_time"]["minute"]),
         )
@@ -47,7 +45,6 @@ def create_config(name: str):
     if name in all_configs:
         raise ValueError(f"Configuration '{name}' already exists.")
 
-    # Create config with default intervals for each day
     import copy
     new_config = {day: copy.deepcopy(DEFAULT_INTERVALS) for day in DAYS_OF_WEEK}
 
@@ -64,7 +61,6 @@ def delete_config(name: str, current_selected_config: str = None):
     if name not in all_configs:
         raise ValueError(f"Configuration '{name}' does not exist.")
 
-    # Check if trying to delete the currently active config
     if current_selected_config and name == current_selected_config:
         raise ValueError(f"Cannot delete '{name}' - it is currently active. Please select a different configuration first.")
 
@@ -89,10 +85,9 @@ def check_interval_list(intervals: List[Interval]) -> bool:
     if not intervals:
         raise ValueError("Interval list is empty")
 
-    # Check 1st requirement: first start_time should be last end_time + 1
     first_start = intervals[0].start_time.timestamp
     last_end = intervals[-1].end_time.timestamp
-    expected_first_start = (last_end + 1) % (24 * 60) # Edge case when 23:59 is last end
+    expected_first_start = (last_end + 1) % (24 * 60)
 
     if first_start != expected_first_start:
         raise ValueError(f"First and Last timestamp in whole list are not continuous")
@@ -105,14 +100,14 @@ def check_interval_list(intervals: List[Interval]) -> bool:
         start = current.start_time.timestamp
         end = current.end_time.timestamp
 
-        if start > end: # means this Interval passes midnight
+        if start > end:
             wrap_count += 1
             if wrap_count > 1:
                 raise ValueError("More than one midnight pass")
 
         if i > 0:
             prev_end = intervals[i - 1].end_time.timestamp
-            expected_start = (prev_end + 1) % (24 * 60) # Has to do % in case 23:59 was prev_end
+            expected_start = (prev_end + 1) % (24 * 60)
             if start != expected_start:
                 raise ValueError(f"Intervals {i} and {i + 1} are not continuous: ")
 
@@ -130,7 +125,7 @@ def find_active_interval(config: Configuration, time: Time) -> str:
         if start < end:
             if start <= time.timestamp <= end:
                 return f"{day}:{i}"
-        else: # interval wraps past midnight
+        else:
             if time.timestamp >= start or time.timestamp <= end:
                 return f"{day}:{i}"
 
@@ -139,5 +134,4 @@ def get_interval_obj(config: Configuration, target_interval: str) -> Interval:
     day, index_str = target_interval.split(":")
     index = int(index_str)
 
-    # config.day[index]
     return getattr(config, day)[index]

@@ -1,5 +1,3 @@
-// Configuration View Modal Functions
-
 function openConfigModal() {
     if (!cachedConfigData || !cachedConfigData.config) {
         showMessage('No configuration data available', 'error');

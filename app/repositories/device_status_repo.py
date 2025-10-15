@@ -11,13 +11,11 @@ DEVICE_STATUS_FILE = Path("storage/device_status.json")
 def load_device_status_threadsafe() -> DeviceStatus:
     """Load device status from JSON file"""
     with _device_status_lock:
-        # Create file with defaults if it doesn't exist
         if not DEVICE_STATUS_FILE.exists():
             default_status = DeviceStatus(
                 relay=DeviceInfo(status="offline", ip_address=None, device_id=None),
                 sensor=DeviceInfo(status="offline", ip_address=None, device_id=None)
             )
-            # Save directly without acquiring lock again (we already have it)
             DEVICE_STATUS_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(DEVICE_STATUS_FILE, 'w') as f:
                 json.dump({

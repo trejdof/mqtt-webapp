@@ -30,7 +30,6 @@ class MockTemperatureSensor:
         self.is_running = False
 
     def start(self):
-        """Start the mock temperature sensor publishing thread"""
         if self.is_running:
             print("[MOCK SENSOR] Already running")
             return
@@ -44,7 +43,6 @@ class MockTemperatureSensor:
         print("[MOCK SENSOR] Note: 3 consecutive same readings = temperature actually changed")
 
     def stop(self):
-        """Stop the mock temperature sensor"""
         if not self.is_running:
             return
 
@@ -57,18 +55,13 @@ class MockTemperatureSensor:
 
     def _get_next_temperature(self):
         """
-        Get the next temperature reading.
-
-        Temperature only actually changes after 3 consecutive same readings.
-        This means we need to send the same value 3 times before moving to a new value.
+        Temperature only changes after 3 consecutive same readings.
+        This mimics the real sensor behavior.
         """
         self.consecutive_count += 1
 
-        # After 3 consecutive readings of the same temperature, it's "confirmed"
-        # Now we can move to a new target temperature
         if self.consecutive_count >= 3:
             self.current_temp = self.target_temp
-            # Pick a new random target temperature between 20-22°C
             self.target_temp = round(random.uniform(TEMP_MIN, TEMP_MAX), 1)
             self.consecutive_count = 0
             print(f"[MOCK SENSOR] Temperature confirmed at {self.current_temp}°C, new target: {self.target_temp}°C")
@@ -76,7 +69,6 @@ class MockTemperatureSensor:
         return self.target_temp
 
     def _publish_temperature(self, temp):
-        """Publish temperature to MQTT topic"""
         try:
             payload = f"{temp:.1f}"
             result = self.mqtt_client.publish(MOCK_SENSOR_TOPIC, payload, qos=0, retain=False)
@@ -90,19 +82,15 @@ class MockTemperatureSensor:
             print(f"[MOCK SENSOR] Error publishing temperature: {e}")
 
     def _publishing_loop(self):
-        """Main loop that publishes temperature readings every 15 seconds"""
-        # Wait a bit for MQTT to be fully connected
         time.sleep(2)
 
         while not self.stop_event.is_set():
             temp = self._get_next_temperature()
             self._publish_temperature(temp)
 
-            # Wait for next publish interval (or until stop event)
             self.stop_event.wait(PUBLISH_INTERVAL)
 
     def get_status(self):
-        """Get the current status of the mock sensor"""
         return {
             "running": self.is_running,
             "current_temp": self.current_temp,
@@ -112,30 +100,25 @@ class MockTemperatureSensor:
         }
 
 
-# Global instance (will be initialized when MQTT client is ready)
 _mock_sensor_instance = None
 
 def init_mock_sensor(mqtt_client):
-    """Initialize the mock sensor with the MQTT client"""
     global _mock_sensor_instance
     if _mock_sensor_instance is None:
         _mock_sensor_instance = MockTemperatureSensor(mqtt_client)
     return _mock_sensor_instance
 
 def start_mock_sensor():
-    """Start the mock sensor"""
     if _mock_sensor_instance:
         _mock_sensor_instance.start()
     else:
         print("[MOCK SENSOR] Error: Not initialized. Call init_mock_sensor() first.")
 
 def stop_mock_sensor():
-    """Stop the mock sensor"""
     if _mock_sensor_instance:
         _mock_sensor_instance.stop()
 
 def get_mock_sensor_status():
-    """Get the status of the mock sensor"""
     if _mock_sensor_instance:
         return _mock_sensor_instance.get_status()
     return {"running": False}

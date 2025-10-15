@@ -4,7 +4,6 @@ async function openChangeConfigModal() {
     const modal = document.getElementById('change-config-modal');
     const configListDiv = document.getElementById('config-list');
 
-    // Fetch all configurations
     try {
         const { response, data: configs } = await fetchAllConfigs();
 
@@ -13,11 +12,9 @@ async function openChangeConfigModal() {
             return;
         }
 
-        // Get current state to know which config is active
         const state = await fetchState();
         const currentConfig = state.selected_config;
 
-        // Build the config list
         let html = '';
         const configNames = Object.keys(configs);
 
@@ -28,7 +25,6 @@ async function openChangeConfigModal() {
                 const isSelected = configName === currentConfig;
                 const configData = configs[configName];
 
-                // Build details HTML
                 const detailsHtml = buildConfigDetailsHtml(configData);
 
                 html += `
@@ -74,7 +70,6 @@ async function openChangeConfigModal() {
 
         configListDiv.innerHTML = html;
 
-        // Add click handlers
         document.querySelectorAll('.config-list-item').forEach(item => {
             const header = item.querySelector('.config-item-header');
             const radio = item.querySelector('input[type="radio"]');
@@ -85,47 +80,38 @@ async function openChangeConfigModal() {
             const configName = item.getAttribute('data-config');
             const configData = configs[configName];
 
-            // Delete button handler
             deleteBtn.addEventListener('click', async function(e) {
                 e.stopPropagation();
                 const configName = this.getAttribute('data-config');
                 await handleDeleteConfig(configName, currentConfig);
             });
 
-            // Edit button handler
             editBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 enterEditMode(item, configName, configData);
             });
 
-            // Click on header to select
             header.addEventListener('click', function(e) {
-                // If clicking on radio or label, let default behavior happen
                 if (e.target === radio || e.target.tagName === 'LABEL') {
                     radio.checked = true;
-                    // Update selected class
                     document.querySelectorAll('.config-list-item').forEach(i => i.classList.remove('selected'));
                     item.classList.add('selected');
                     return;
                 }
 
-                // Don't toggle if clicking on delete button
                 if (e.target.closest('.delete-config-btn')) {
                     return;
                 }
 
-                // Otherwise toggle expansion
                 e.stopPropagation();
                 toggleConfigDetails(item);
             });
 
-            // Click on expand icon to toggle
             expandIcon.addEventListener('click', function(e) {
                 e.stopPropagation();
                 toggleConfigDetails(item);
             });
 
-            // Radio change handler
             radio.addEventListener('change', function() {
                 if (this.checked) {
                     document.querySelectorAll('.config-list-item').forEach(i => i.classList.remove('selected'));
@@ -147,7 +133,6 @@ function toggleConfigDetails(item) {
     const expandIcon = item.querySelector('.expand-icon');
     const isExpanded = details.classList.contains('expanded');
 
-    // Collapse all other items
     document.querySelectorAll('.config-list-item').forEach(otherItem => {
         if (otherItem !== item) {
             otherItem.querySelector('.config-details').classList.remove('expanded');
@@ -155,7 +140,6 @@ function toggleConfigDetails(item) {
         }
     });
 
-    // Toggle current item
     if (isExpanded) {
         details.classList.remove('expanded');
         expandIcon.classList.remove('expanded');
@@ -171,7 +155,6 @@ async function changeConfiguration(configName) {
 
         if (response.ok) {
             showMessage(`Configuration changed to: ${configName}`, 'success');
-            // Reload state to reflect the change
             loadSystemState();
         } else {
             showMessage(`Error: ${data.detail}`, 'error');
@@ -183,13 +166,11 @@ async function changeConfiguration(configName) {
 }
 
 async function handleDeleteConfig(configName, currentConfig) {
-    // Prevent deletion of currently active config
     if (configName === currentConfig) {
         showMessage(`Cannot delete "${configName}" - it is currently active. Please select a different configuration first.`, 'error');
         return;
     }
 
-    // Confirmation for deletion
     const confirmDelete = confirm(
         `Are you sure you want to delete configuration "${configName}"?\n\n` +
         `This action cannot be undone.`
@@ -204,7 +185,6 @@ async function handleDeleteConfig(configName, currentConfig) {
 
         if (response.ok) {
             showMessage(`Configuration "${configName}" deleted successfully`, 'success');
-            // Reload the modal to refresh the list
             await openChangeConfigModal();
         } else {
             showMessage(`Error: ${data.detail}`, 'error');

@@ -1,188 +1,4 @@
 {
-    "first": {
-        "monday": [
-            {
-                "start_time": {
-                    "hour": 19,
-                    "minute": 31,
-                    "timestamp": 1171
-                },
-                "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 19,
-                "OFF_temperature": 21
-            }
-        ],
-        "tuesday": [
-            {
-                "start_time": {
-                    "hour": 8,
-                    "minute": 0,
-                    "timestamp": 480
-                },
-                "end_time": {
-                    "hour": 7,
-                    "minute": 59,
-                    "timestamp": 479
-                },
-                "ON_temperature": 19,
-                "OFF_temperature": 21
-            }
-        ],
-        "wednesday": [
-            {
-                "start_time": {
-                    "hour": 8,
-                    "minute": 0,
-                    "timestamp": 480
-                },
-                "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            },
-            {
-                "start_time": {
-                    "hour": 19,
-                    "minute": 31,
-                    "timestamp": 1171
-                },
-                "end_time": {
-                    "hour": 7,
-                    "minute": 59,
-                    "timestamp": 479
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            }
-        ],
-        "thursday": [
-            {
-                "start_time": {
-                    "hour": 8,
-                    "minute": 0,
-                    "timestamp": 480
-                },
-                "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            },
-            {
-                "start_time": {
-                    "hour": 19,
-                    "minute": 31,
-                    "timestamp": 1171
-                },
-                "end_time": {
-                    "hour": 7,
-                    "minute": 59,
-                    "timestamp": 479
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            }
-        ],
-        "friday": [
-            {
-                "start_time": {
-                    "hour": 8,
-                    "minute": 0,
-                    "timestamp": 480
-                },
-                "end_time": {
-                    "hour": 7,
-                    "minute": 59,
-                    "timestamp": 479
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            }
-        ],
-        "saturday": [
-            {
-                "start_time": {
-                    "hour": 8,
-                    "minute": 0,
-                    "timestamp": 480
-                },
-                "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            },
-            {
-                "start_time": {
-                    "hour": 19,
-                    "minute": 31,
-                    "timestamp": 1171
-                },
-                "end_time": {
-                    "hour": 7,
-                    "minute": 59,
-                    "timestamp": 479
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            }
-        ],
-        "sunday": [
-            {
-                "start_time": {
-                    "hour": 8,
-                    "minute": 0,
-                    "timestamp": 480
-                },
-                "end_time": {
-                    "hour": 19,
-                    "minute": 30,
-                    "timestamp": 1170
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            },
-            {
-                "start_time": {
-                    "hour": 19,
-                    "minute": 31,
-                    "timestamp": 1171
-                },
-                "end_time": {
-                    "hour": 22,
-                    "minute": 35,
-                    "timestamp": 1355
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            },
-            {
-                "start_time": {
-                    "hour": 22,
-                    "minute": 36,
-                    "timestamp": 1356
-                },
-                "end_time": {
-                    "hour": 7,
-                    "minute": 59,
-                    "timestamp": 479
-                },
-                "ON_temperature": 22,
-                "OFF_temperature": 18
-            }
-        ]
-    },
     "test": {
         "monday": [
             {
@@ -197,7 +13,7 @@
                     "timestamp": 719
                 },
                 "ON_temperature": 22,
-                "OFF_temperature": 21
+                "OFF_temperature": 23
             }
         ],
         "tuesday": [
@@ -212,8 +28,8 @@
                     "minute": 59,
                     "timestamp": 719
                 },
-                "ON_temperature": 20,
-                "OFF_temperature": 19
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
@@ -226,8 +42,8 @@
                     "minute": 59,
                     "timestamp": 1439
                 },
-                "ON_temperature": 22,
-                "OFF_temperature": 21
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "wednesday": [
@@ -242,8 +58,8 @@
                     "minute": 59,
                     "timestamp": 719
                 },
-                "ON_temperature": 20,
-                "OFF_temperature": 19
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
@@ -256,8 +72,8 @@
                     "minute": 59,
                     "timestamp": 1439
                 },
-                "ON_temperature": 22,
-                "OFF_temperature": 21
+                "ON_temperature": 22.8,
+                "OFF_temperature": 23.5
             }
         ],
         "thursday": [
@@ -272,8 +88,8 @@
                     "minute": 59,
                     "timestamp": 719
                 },
-                "ON_temperature": 20,
-                "OFF_temperature": 19
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
@@ -286,8 +102,8 @@
                     "minute": 59,
                     "timestamp": 1439
                 },
-                "ON_temperature": 22,
-                "OFF_temperature": 21
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "friday": [
@@ -302,8 +118,8 @@
                     "minute": 59,
                     "timestamp": 719
                 },
-                "ON_temperature": 20,
-                "OFF_temperature": 19
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
@@ -316,8 +132,8 @@
                     "minute": 59,
                     "timestamp": 1439
                 },
-                "ON_temperature": 22,
-                "OFF_temperature": 21
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "saturday": [
@@ -332,8 +148,8 @@
                     "minute": 59,
                     "timestamp": 719
                 },
-                "ON_temperature": 20,
-                "OFF_temperature": 19
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
@@ -346,8 +162,8 @@
                     "minute": 59,
                     "timestamp": 1439
                 },
-                "ON_temperature": 22,
-                "OFF_temperature": 21
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "sunday": [
@@ -362,8 +178,8 @@
                     "minute": 59,
                     "timestamp": 719
                 },
-                "ON_temperature": 20,
-                "OFF_temperature": 19
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
@@ -376,8 +192,8 @@
                     "minute": 59,
                     "timestamp": 1439
                 },
-                "ON_temperature": 22,
-                "OFF_temperature": 21
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ]
     },
@@ -386,182 +202,238 @@
             {
                 "start_time": {
                     "hour": 0,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 0
                 },
                 "end_time": {
                     "hour": 11,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 719
                 },
-                "ON_temperature": 20.0,
-                "OFF_temperature": 19.0
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
                     "hour": 12,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 720
+                },
+                "end_time": {
+                    "hour": 16,
+                    "minute": 0,
+                    "timestamp": 960
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 21
+            },
+            {
+                "start_time": {
+                    "hour": 16,
+                    "minute": 1,
+                    "timestamp": 961
+                },
+                "end_time": {
+                    "hour": 19,
+                    "minute": 58,
+                    "timestamp": 1198
+                },
+                "ON_temperature": 20,
+                "OFF_temperature": 21
+            },
+            {
+                "start_time": {
+                    "hour": 19,
+                    "minute": 59,
+                    "timestamp": 1199
                 },
                 "end_time": {
                     "hour": 23,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 1439
                 },
-                "ON_temperature": 22.0,
-                "OFF_temperature": 21.0
+                "ON_temperature": 20,
+                "OFF_temperature": 21
             }
         ],
         "tuesday": [
             {
                 "start_time": {
                     "hour": 0,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 0
                 },
                 "end_time": {
                     "hour": 11,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 719
                 },
-                "ON_temperature": 20.0,
-                "OFF_temperature": 19.0
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
                     "hour": 12,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 720
                 },
                 "end_time": {
                     "hour": 23,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 1439
                 },
-                "ON_temperature": 22.0,
-                "OFF_temperature": 21.0
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "wednesday": [
             {
                 "start_time": {
                     "hour": 0,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 0
                 },
                 "end_time": {
                     "hour": 11,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 719
                 },
-                "ON_temperature": 20.0,
-                "OFF_temperature": 19.0
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
                     "hour": 12,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 720
                 },
                 "end_time": {
                     "hour": 23,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 1439
                 },
-                "ON_temperature": 22.0,
-                "OFF_temperature": 21.0
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "thursday": [
             {
                 "start_time": {
                     "hour": 0,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 0
                 },
                 "end_time": {
                     "hour": 11,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 719
                 },
-                "ON_temperature": 20.0,
-                "OFF_temperature": 19.0
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
                     "hour": 12,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 720
                 },
                 "end_time": {
                     "hour": 23,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 1439
                 },
-                "ON_temperature": 22.0,
-                "OFF_temperature": 21.0
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "friday": [
             {
                 "start_time": {
                     "hour": 0,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 0
                 },
                 "end_time": {
                     "hour": 11,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 719
                 },
-                "ON_temperature": 20.0,
-                "OFF_temperature": 19.0
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
                     "hour": 12,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 720
                 },
                 "end_time": {
                     "hour": 23,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 1439
                 },
-                "ON_temperature": 22.0,
-                "OFF_temperature": 21.0
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "saturday": [
             {
                 "start_time": {
                     "hour": 0,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 0
                 },
                 "end_time": {
                     "hour": 11,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 719
                 },
-                "ON_temperature": 20.0,
-                "OFF_temperature": 19.0
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
                     "hour": 12,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 720
                 },
                 "end_time": {
                     "hour": 23,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 1439
                 },
-                "ON_temperature": 22.0,
-                "OFF_temperature": 21.0
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ],
         "sunday": [
             {
                 "start_time": {
                     "hour": 0,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 0
                 },
                 "end_time": {
                     "hour": 11,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 719
                 },
-                "ON_temperature": 20.0,
-                "OFF_temperature": 19.0
+                "ON_temperature": 19,
+                "OFF_temperature": 20
             },
             {
                 "start_time": {
                     "hour": 12,
-                    "minute": 0
+                    "minute": 0,
+                    "timestamp": 720
                 },
                 "end_time": {
                     "hour": 23,
-                    "minute": 59
+                    "minute": 59,
+                    "timestamp": 1439
                 },
-                "ON_temperature": 22.0,
-                "OFF_temperature": 21.0
+                "ON_temperature": 21,
+                "OFF_temperature": 22
             }
         ]
     }

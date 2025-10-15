@@ -11,10 +11,8 @@ def get_state():
     """Get current system state"""
     try:
         state = state_repo.load_state_threadsafe()
-        # Get server's current date and time
         server_time = datetime.now()
 
-        # Check if temperature reading is stale (older than 1 minute)
         time_since_last_temp = server_time - state.current_timestamp
         is_temp_stale = time_since_last_temp > timedelta(minutes=1)
 
@@ -43,15 +41,12 @@ def select_config(config_data: dict):
         config_name = config_data.get("config_name")
         if not config_name:
             raise HTTPException(status_code=400, detail="config_name is required")
-        
-        # Check if config exists
+
         config_repo.load_config(config_name)
-        
-        # Get current time for finding active interval
+
         now = datetime.now()
         current_time = Time(now.hour, now.minute)
-        
-        # Change the selected configuration
+
         state_repo.change_selected_configuration(config_name, current_time)
         
         return {"status": "success", "selected_config": config_name}
@@ -93,7 +88,6 @@ def get_active_config():
         if not state.selected_config:
             return {"config_name": None, "config": None}
 
-        # Get the raw config data (dictionary format)
         all_configs = config_repo.load_all_configs()
         config_data = all_configs.get(state.selected_config)
 
@@ -117,7 +111,6 @@ def update_hysteresis(data: dict):
         if hysteresis is None:
             raise HTTPException(status_code=400, detail="hysteresis is required")
 
-        # Validate value
         if not isinstance(hysteresis, (int, float)) or hysteresis < 0 or hysteresis > 5:
             raise HTTPException(status_code=400, detail="hysteresis must be between 0 and 5")
 

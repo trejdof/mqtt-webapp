@@ -6,6 +6,7 @@ from app.models.configuration import Configuration
 import app.repositories.config_repo as cfg
 from datetime import time, datetime
 import threading
+import math
 
 _state_lock = threading.Lock()
 
@@ -62,18 +63,19 @@ def temp_heartbeat(temp: float) -> bool:
     now = datetime.now()
     time_obj = Time(now.hour, now.minute)
 
-    record_temperature_reading(temp, now)
+    rounded_temp = round_temperature(temp)
+    record_temperature_reading(rounded_temp, now)
 
     state = load_state_threadsafe()
     config = cfg.load_config(state.selected_config)
-    
+
 
     active_interval = cfg.find_active_interval(config, time_obj)
 
     if active_interval != state.active_interval:
         update_active_interval(active_interval)
 
-    boiler_toggle = should_toggle_boiler(temp, state.boiler_state, active_interval, config)
+    boiler_toggle = should_toggle_boiler(rounded_temp, state.boiler_state, active_interval, config)
 
     return boiler_toggle
 
@@ -82,14 +84,21 @@ def should_toggle_boiler(temp: float, boiler_state: bool, active_interval: str, 
 
     active_interval_obj = cfg.get_interval_obj(config, active_interval)
 
+    print(f"[TOGGLE CHECK] Current: {temp}°C, Boiler: {boiler_state_str(boiler_state)}, "
+          f"ON_temp: {active_interval_obj.ON_temperature}°C, OFF_temp: {active_interval_obj.OFF_temperature}°C")
+
     if boiler_state:
-        # boiler is ON
-        if temp > active_interval_obj.OFF_temperature: # should turn OFF
+        if temp >= active_interval_obj.OFF_temperature:
+            print(f"[TOGGLE CHECK] Boiler ON and temp ({temp}°C) >= OFF threshold ({active_interval_obj.OFF_temperature}°C) - Turn OFF")
             return True
+        else:
+            print(f"[TOGGLE CHECK] Boiler ON but temp ({temp}°C) < OFF threshold ({active_interval_obj.OFF_temperature}°C) - Stay ON")
     else:
-        # boilder is OFF
-        if temp < active_interval_obj.ON_temperature: # should turn ON
-            return True 
+        if temp <= active_interval_obj.ON_temperature:
+            print(f"[TOGGLE CHECK] Boiler OFF and temp ({temp}°C) <= ON threshold ({active_interval_obj.ON_temperature}°C) - Turn ON")
+            return True
+        else:
+            print(f"[TOGGLE CHECK] Boiler OFF but temp ({temp}°C) > ON threshold ({active_interval_obj.ON_temperature}°C) - Stay OFF")
 
     return False
 
@@ -117,6 +126,24 @@ def update_active_interval(interval: str):
     save_state_threadsafe(state)
 
     print(f"[NOTIFY] Interval changed: {old_interval_obj} => {new_interval_obj}")
+
+
+def round_temperature(temp: float) -> float:
+    """
+    Round temperature down to 1 decimal place for conservative/stable readings.
+
+    Examples:
+        21.22 -> 21.2
+        21.26 -> 21.2
+        21.30 -> 21.3
+
+    Args:
+        temp: Raw temperature reading
+
+    Returns:
+        Temperature rounded down to 1 decimal place
+    """
+    return math.floor(temp * 10) / 10
 
 
 def record_temperature_reading(temp: float, timestamp: time):

@@ -15,9 +15,8 @@ def start_mqtt():
     client.connect("localhost", 1883, 60)
     client.loop_start()
 
-    # Initialize and start mock temperature sensor
-    mock_temp_sensor.init_mock_sensor(client)
-    mock_temp_sensor.start_mock_sensor()
+    # mock_temp_sensor.init_mock_sensor(client)
+    # mock_temp_sensor.start_mock_sensor()
 
 def on_connect(client, userdata, flags, rc):
     print(f"[MQTT] Connected with result code {rc}")

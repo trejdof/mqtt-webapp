@@ -1,18 +1,12 @@
-// Main Application Entry Point
-
-// Initialize application
 document.addEventListener('DOMContentLoaded', function() {
     loadSystemState();
     loadDeviceStatus();
-    // Refresh every 10 seconds
     setInterval(loadSystemState, 1000);
-    setInterval(loadDeviceStatus, 2000);  // Refresh device status every 2 seconds
+    setInterval(loadDeviceStatus, 2000);
 
-    // Setup modals
     setupConfigViewModal();
     setupChangeConfigModal();
 
-    // Setup hysteresis input
     setupHysteresisInput();
 });
 
@@ -21,10 +15,8 @@ async function loadSystemState() {
         const data = await fetchState();
         updateStatusDisplay(data);
 
-        // Load detailed interval information
         loadActiveIntervalDetails();
 
-        // Load active configuration
         loadActiveConfig();
     } catch (error) {
         showMessage('Failed to connect to server', 'error');
@@ -37,16 +29,13 @@ function setupHysteresisInput() {
     let timeoutId = null;
 
     input.addEventListener('input', function() {
-        // Clear existing timeout
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
 
-        // Wait 500ms after user stops typing before saving
         timeoutId = setTimeout(async () => {
             const value = parseFloat(input.value);
 
-            // Validate value
             if (isNaN(value) || value < 0 || value > 5) {
                 showMessage('Hysteresis must be between 0 and 5°C', 'error');
                 return;
@@ -91,7 +80,6 @@ async function loadDeviceStatus() {
 }
 
 function updateDeviceStatusDisplay(data) {
-    // Update sensor status
     const sensorBadge = document.getElementById('sensor-status-badge');
     const sensorDeviceId = document.getElementById('sensor-device-id');
     const sensorIp = document.getElementById('sensor-ip');
@@ -108,7 +96,6 @@ function updateDeviceStatusDisplay(data) {
         sensorIp.textContent = '--';
     }
 
-    // Update relay status
     const relayBadge = document.getElementById('relay-status-badge');
     const relayDeviceId = document.getElementById('relay-device-id');
     const relayIp = document.getElementById('relay-ip');

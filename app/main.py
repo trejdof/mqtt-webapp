@@ -12,7 +12,6 @@ import uvicorn
 
 def start_mqtt_client():
     """Start MQTT client in the background"""
-    # Inject the MQTT client into the service
     mqtt_service.init(client.client)
 
     client.start_mqtt()
@@ -23,11 +22,9 @@ def start_mqtt_client():
 
 
 def main():
-    # Start MQTT client in a separate thread
     mqtt_thread = threading.Thread(target=start_mqtt_client, daemon=True)
     mqtt_thread.start()
 
-    # Start FastAPI web server (this will block)
     try:
         uvicorn.run("app.server:app", host="0.0.0.0", port=8000, reload=False, log_level="warning")
     except KeyboardInterrupt:

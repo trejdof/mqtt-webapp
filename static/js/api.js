@@ -1,7 +1,5 @@
-// API Configuration
 const API_BASE = window.location.origin;
 
-// State API
 async function fetchState() {
     const response = await fetch(`${API_BASE}/state`);
     return await response.json();
@@ -39,7 +37,6 @@ async function updateHysteresis(value) {
     return await response.json();
 }
 
-// Config API
 async function fetchAllConfigs() {
     const response = await fetch(`${API_BASE}/configs`);
     return { response, data: await response.json() };
@@ -81,7 +78,6 @@ async function updateConfig(name, configData) {
     return { response, data: await response.json() };
 }
 
-// Device Status API
 async function fetchDeviceStatus() {
     const response = await fetch(`${API_BASE}/devices/status`);
     return await response.json();

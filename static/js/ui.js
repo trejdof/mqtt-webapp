@@ -1,14 +1,10 @@
-// UI Update Functions
-
 let cachedConfigData = null;
 
 function updateStatusDisplay(state) {
-    // Update boiler status
     const boilerStatus = document.getElementById('boiler-status');
     boilerStatus.textContent = state.boiler_state ? 'ON' : 'OFF';
     boilerStatus.className = 'status-value ' + (state.boiler_state ? 'boiler-on' : 'boiler-off');
 
-    // Update active configuration (clickable)
     const activeConfigElement = document.getElementById('active-config');
     activeConfigElement.textContent = state.selected_config || 'None';
 
@@ -19,10 +15,8 @@ function updateStatusDisplay(state) {
         activeConfigElement.style.cursor = 'default';
     }
 
-    // Update temperature
     document.getElementById('current-temp').textContent = `${state.current_temp}°C`;
 
-    // Update hysteresis value
     if (state.hysteresis !== undefined) {
         const hysteresisInput = document.getElementById('hysteresis-input');
         if (hysteresisInput && hysteresisInput !== document.activeElement) {
@@ -30,7 +24,6 @@ function updateStatusDisplay(state) {
         }
     }
 
-    // Update temperature info
     const tempChange = state.current_temp - state.prev_temp;
     const tempInfo = document.getElementById('temp-info');
     if (tempChange > 0) {
@@ -44,14 +37,12 @@ function updateStatusDisplay(state) {
         tempInfo.style.color = '#718096';
     }
 
-    // Update temperature timestamp
     const lastUpdate = new Date(state.current_timestamp);
     const tempDateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     const tempDateStr = lastUpdate.toLocaleDateString(undefined, tempDateOptions);
     const tempTimeStr = lastUpdate.toLocaleTimeString(undefined, { hour12: false });
     document.getElementById('temp-timestamp-value').textContent = `${tempDateStr} ${tempTimeStr}`;
 
-    // Update temperature stale warning
     const staleWarning = document.getElementById('temp-stale-warning');
     const tempCard = document.getElementById('temp-card');
     if (state.is_temp_stale) {
@@ -62,7 +53,6 @@ function updateStatusDisplay(state) {
         tempCard.classList.remove('temp-card-warning');
     }
 
-    // Update system status title with server time
     const serverTime = new Date(state.server_time);
     const dateOptions = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
     const dateStr = serverTime.toLocaleDateString(undefined, dateOptions);
@@ -74,7 +64,6 @@ function updateActiveIntervalDisplay(intervalData) {
     const activeIntervalElement = document.getElementById('active-interval');
 
     if (intervalData.active_interval) {
-        // Extract day name from "sunday:0" format
         const dayName = intervalData.active_interval.split(':')[0];
         const formattedDay = dayName.charAt(0).toUpperCase() + dayName.slice(1);
 
@@ -133,7 +122,6 @@ function showMessage(text, type) {
 
     messagesDiv.appendChild(message);
 
-    // Auto-remove message after 5 seconds
     setTimeout(() => {
         if (message.parentNode) {
             message.parentNode.removeChild(message);

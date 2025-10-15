@@ -1,11 +1,12 @@
 {
-    "selected_configuration": "first",
-    "active_interval": "friday:0",
+    "selected_configuration": "test",
+    "active_interval": "wednesday:1",
     "boiler_state": true,
-    "current_temp": 19.7,
-    "current_timestamp": "2025-10-11T00:18:22",
-    "prev_temp": 19.6,
-    "prev_timestamp": "2025-06-17T23:58:12",
+    "current_temp": 22.1,
+    "current_timestamp": "2025-10-15T23:13:09",
+    "prev_temp": 22.1,
+    "prev_timestamp": "2025-10-15T23:12:59",
     "temp_measure_period": 15,
-    "consecutive_measures": 10
+    "consecutive_measures": 10,
+    "hysteresis": 0.0
 }

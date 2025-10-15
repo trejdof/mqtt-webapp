@@ -66,7 +66,6 @@ def handle_device_status(topic: str, payload: str):
         device_type = data.get("device_type")
         ip_address = data.get("ip_address")
 
-        # Extract device_id from topic (branko/devices/relay/status -> relay)
         device_id = topic.split("/")[2]
 
         if status == "online":
@@ -80,12 +79,9 @@ def handle_device_status(topic: str, payload: str):
                 relay_synced = False
                 print("[STATE SYNC] Relay disconnected - Relay commands BLOCKED until re-sync")
 
-            # For offline, we need to figure out which device type it is
-            # Try to get it from the payload first, otherwise check existing status
             if device_type:
                 device_repo.update_device_status(device_type, "offline")
             else:
-                # Check which device has this device_id and mark it offline
                 current_status = device_repo.load_device_status_threadsafe()
                 if current_status.relay.device_id == device_id:
                     device_repo.update_device_status("relay", "offline")
@@ -124,7 +120,6 @@ def handle_state_sync_request(client):
     """
     print("[STATE SYNC] Received state sync request from ESP32")
 
-    # Get current boiler state from repository
     current_state = sr.load_state_threadsafe()
     state_str = "ON" if current_state.boiler_state else "OFF"
 

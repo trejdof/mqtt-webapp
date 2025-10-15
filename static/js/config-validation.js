@@ -1,12 +1,8 @@
-// Configuration Validation Functions
-
 function setupRealtimeValidation(editMode) {
-    // Listen to all time and temperature inputs
     const allInputs = editMode.querySelectorAll('.interval-start-time, .interval-end-time, .interval-on-temp, .interval-off-temp');
 
     allInputs.forEach(input => {
         input.addEventListener('input', function() {
-            // Debounce validation slightly
             clearTimeout(input.validationTimeout);
             input.validationTimeout = setTimeout(() => {
                 validateInRealtime(editMode);
@@ -14,14 +10,12 @@ function setupRealtimeValidation(editMode) {
         });
 
         input.addEventListener('blur', function() {
-            // Immediate validation on blur
             validateInRealtime(editMode);
         });
     });
 }
 
 function validateInRealtime(editMode) {
-    // Clear all previous error states
     editMode.querySelectorAll('.day-edit-section').forEach(section => {
         section.classList.remove('has-error');
         const existingError = section.querySelector('.day-validation-error');
@@ -38,11 +32,9 @@ function validateInRealtime(editMode) {
         input.classList.remove('error');
     });
 
-    // Collect and validate data
     const updatedConfig = collectIntervalData(editMode);
     const error = validateConfigurationDetailed(updatedConfig, editMode);
 
-    // No errors - all good!
     if (!error) {
         return true;
     }
@@ -70,11 +62,9 @@ function validateConfigurationDetailed(config, editMode) {
         const expectedFirstStart = (lastEnd + 1) % (24 * 60);
 
         if (firstStart !== expectedFirstStart) {
-            // Calculate what the last interval end should be
             const expectedLastEnd = (firstStart - 1 + 24 * 60) % (24 * 60);
 
             markDayError(daySection, `Must cover full 24 hours. Last interval should end at ${formatTimestamp(expectedLastEnd)}`);
-            // Mark last interval as error
             const lastInterval = daySection.querySelector(`.interval-edit-item[data-index="${intervals.length - 1}"]`);
             if (lastInterval) {
                 lastInterval.classList.add('has-error');
@@ -90,7 +80,6 @@ function validateConfigurationDetailed(config, editMode) {
             const start = current.start_time.timestamp;
             const end = current.end_time.timestamp;
 
-            // Check for midnight crossing
             if (start > end) {
                 midnightCrossings++;
                 if (midnightCrossings > 1) {
@@ -99,14 +88,12 @@ function validateConfigurationDetailed(config, editMode) {
                 }
             }
 
-            // Check continuity with previous interval
             if (i > 0) {
                 const prevEnd = intervals[i - 1].end_time.timestamp;
                 const expectedStart = (prevEnd + 1) % (24 * 60);
 
                 if (start !== expectedStart) {
                     markDayError(daySection, `Gap between intervals. This interval should start at ${formatTimestamp(expectedStart)}`);
-                    // Mark the problematic interval
                     const intervalItem = daySection.querySelector(`.interval-edit-item[data-index="${i}"]`);
                     if (intervalItem) {
                         intervalItem.classList.add('has-error');
@@ -124,7 +111,6 @@ function validateConfigurationDetailed(config, editMode) {
 function markDayError(daySection, message) {
     daySection.classList.add('has-error');
 
-    // Add error message if not already present
     if (!daySection.querySelector('.day-validation-error')) {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'day-validation-error';
@@ -133,7 +119,6 @@ function markDayError(daySection, message) {
     }
 }
 
-// Validate configuration following backend rules
 function validateConfiguration(config) {
     const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -161,7 +146,6 @@ function validateConfiguration(config) {
             const start = current.start_time.timestamp;
             const end = current.end_time.timestamp;
 
-            // Check for midnight crossing
             if (start > end) {
                 midnightCrossings++;
                 if (midnightCrossings > 1) {
@@ -169,7 +153,6 @@ function validateConfiguration(config) {
                 }
             }
 
-            // Check continuity with previous interval
             if (i > 0) {
                 const prevEnd = intervals[i - 1].end_time.timestamp;
                 const expectedStart = (prevEnd + 1) % (24 * 60);
@@ -181,7 +164,7 @@ function validateConfiguration(config) {
         }
     }
 
-    return null; // No errors
+    return null;
 }
 
 // Collect all interval data from the edit mode form
@@ -215,18 +198,15 @@ function collectIntervalData(editMode) {
     return config;
 }
 
-// Utility: Calculate timestamp from hour and minute
 function calculateTimestamp(hour, minute) {
     return hour * 60 + minute;
 }
 
-// Utility: Parse time input (HH:MM) to hour and minute
 function parseTimeInput(timeString) {
     const [hour, minute] = timeString.split(':').map(Number);
     return { hour, minute, timestamp: calculateTimestamp(hour, minute) };
 }
 
-// Format timestamp (minutes from midnight) to HH:MM
 function formatTimestamp(timestamp) {
     const hour = Math.floor(timestamp / 60);
     const minute = timestamp % 60;
