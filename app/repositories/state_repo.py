@@ -4,6 +4,7 @@ from app.models.state import State
 from app.models.time import Time
 from app.models.configuration import Configuration
 import app.repositories.config_repo as cfg
+from app.utils.temp_logger import log_temperature_change
 from datetime import time, datetime
 import threading
 import math
@@ -158,6 +159,7 @@ def record_temperature_reading(temp: float, timestamp: time):
     save_state_threadsafe(state)
     if state.prev_temp != state.current_temp:
         print(f"[STATE] Temperature changed from {state.prev_temp} to {state.current_temp}")
+        log_temperature_change(state.current_temp, timestamp)
 
 
 def parse_time(t: str) -> datetime:
